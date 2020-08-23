@@ -1,0 +1,9 @@
+.text_edit {
+	width: 900px;
+	height: 700px;
+	resize: none;
+}
+
+#view_text {
+	width: 500px;
+}

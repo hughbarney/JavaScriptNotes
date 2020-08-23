@@ -1,0 +1,45 @@
+<html>
+   
+   <head>
+      <title>Form Validation</title>
+      
+      <script type="text/javascript">
+   
+	
+	function doStuff()
+	{
+	var str = "";
+     	for ( var p in window) {
+         	str += p;
+        	str += "<br/>";
+	}
+
+	document.write(str);
+	
+          return false;
+	}
+      
+					     
+     </script>
+   </head>
+   
+
+   <body>
+      <form action="/cgi-bin/test.cgi" name="myForm" onsubmit="return doStuff();">
+         <table cellspacing="2" cellpadding="2" border="1">
+            
+            <tr>
+               <td align="right">Name</td>
+               <td><input type="text" name="Name" /></td>
+            </tr>
+            
+            <tr>
+               <td align="right"></td>
+               <td><input type="submit" value="Submit" /></td>
+            </tr>
+            
+         </table>
+      </form>
+      
+   </body>
+</html>

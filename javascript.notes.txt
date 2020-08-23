@@ -1,0 +1,34 @@
+
+
+# very good basic reference
+https://www.tutorialspoint.com/javascript/
+
+https://github.com/jessegreathouse/TinyEditor
+
+# good reference
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function
+
+# 10 part series
+https://mobile.htmlgoodies.com/primers/jsp/article.php/3594621/Javascript-Basics-Part-6.htm
+
+## HTML tags reference
+https://www.w3schools.com/tags/tag_p.asp
+
+## Ymacs
+http://www.ymacs.org/
+
+## ACE Editor Written in JavaScript
+https://ace.c9.io/
+
+## emacs themes
+https://emacsthemes.com/themes/subatomic-theme.html
+
+## Juery
+http://jqfundamentals.com/chapter/javascript-basics
+
+## Cheat Sheet
+https://github.com/krishnr/JavaScript-cheat-sheet
+
+
+left right up down get_at point-max set-point get-point
+

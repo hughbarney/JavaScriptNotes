@@ -1,0 +1,994 @@
+<html>
+<head>
+<title>Concise JavaScript II</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"><script>
+<!--
+function tell(a, b) {
+  document.forms[0].result.value+="\n"+a+": " + b;
+}
+//-->
+</script>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body bgcolor="#FFFFFF">
+<font size="+3"><b>A Concise Introduction to JavaScript</b></font><b><br>
+<font size="+2">Part II: Client-side JavaScript</font> </b> 
+<p>Copyright ©2002 by David Matuszek</p>
+<p>JavaScript is not used to write standalone programs; it is used to write programs 
+  (and snippets of programs) that are included in an HTML Web page. Hence, to 
+  do anything meaningful with JavaScript, it is necessary to understand the internal 
+  structure of the Web page. This structure is given by the HTML DOM (Document 
+  Object Model).</p>
+<p>There are three ways to add JavaScript to an HTML page:</p>
+<ul>
+  <li>Enclose the JavaScript within<code> &lt;script type="text/javascript"&gt;...&lt;/script&gt; 
+    </code>tags. 
+    <blockquote>Since browsers ignore tags they don't understand, very old browsers 
+      that don't know JavaScript will ignore the start and end tags, but will 
+      display the enclosed JavaScript. To prevent this, use the following form 
+      (line arrangement is important):<br>
+      <code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;script type="text/javascript"&gt;<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;!--<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>your JavaScript</i><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//--&gt;<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/script&gt;</code> </blockquote>
+    Function definitions should usually be placed in the<code> &lt;head&gt; </code>of 
+    the HTML document. Scripts in the <code>&lt;body&gt;</code> section are executed 
+    as the page is loaded, and typically produce output that is displayed at that 
+    point in the page.<br>
+    <br>
+  </li>
+  <li>Put the JavaScript in a separate file that has a<code> .js </code>extension, 
+    and load it with<br>
+    <code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;script src=&quot;<i>URL</i>&quot;&gt;&lt;/script&gt;</code><br>
+    (The<code> .js </code>file may not itself contain<code> &lt;script&gt; </code>tags.) 
+    This is the recommended way to write JavaScript that will be used on more 
+    than one page.<br>
+    <br>
+  </li>
+  <li>Include the JavaScript as the value of an HTML &quot;event handler&quot; 
+    attribute. For example: 
+    <blockquote> 
+      <pre>&lt;input type=&quot;button&quot;
+          name=&quot;computeButton&quot; 
+          value=&quot;Compute!&quot;
+          onclick=&quot;with (document.myForm) {
+                         result.value=compute(myInput.value); 
+                       }&quot;&gt;</pre>
+    </blockquote>
+    The various event handlers will be described in the following sections. </li>
+</ul>
+<h2>The HTML DOM (Document Object Model)</h2>
+<p>Here is a partial outline of the object hierarchy (most properties are read-only):</p>
+<ul>
+  <li>The current window (acts as the default prefix for names) 
+    <ul>
+      <li><code>document</code> -- the HTML document 
+        <ul>
+          <li><code>anchors[&nbsp;]</code> -- an array of anchors (<code>&lt;a 
+            name=...&gt;</code> tags) in the document </li>
+          <li><code>applets[&nbsp;]</code> -- an array of Applet objects in the 
+            document</li>
+          <li><code>embeds[&nbsp;]</code> -- an array of embedded objects (like 
+            plugins); used mostly by ASP</li>
+          <li><code>forms[&nbsp;] </code>-- an array of Form elements in the document 
+            <ul>
+              <li><code>elements[&nbsp;] </code>-- an array of form elements in 
+                this form 
+                <ul>
+                  <li>Button</li>
+                  <li>Checkbox</li>
+                  <li>FileUpload</li>
+                  <li>Hidden</li>
+                  <li>Password</li>
+                  <li>Radio</li>
+                  <li>Reset</li>
+                  <li>Select 
+                    <ul>
+                      <li>options[&nbsp;]</li>
+                    </ul>
+                  </li>
+                  <li>Submit</li>
+                  <li>Text</li>
+                  <li>Textarea</li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+          <li><code>images[&nbsp;]</code> -- an array of images (<code>&lt;img 
+            src-...&gt;</code> tags) in the document </li>
+          <li><code>links[&nbsp;]</code> -- an array of hyperlinks (<code>&lt;a 
+            href-...&gt;</code> tags) in the document </li>
+        </ul>
+      </li>
+      <li><code>frames[&nbsp;]</code> -- a</li>
+      <li><code>history</code> -- the browser's History object</li>
+      <li><code>location</code> -- the URL of the currently displayed document; 
+        changing it causes the new URL to be loaded</li>
+      <li><code>screen</code> -- an object that represents the computer screen</li>
+      <li><code>navigator</code> -- an object that represents the browser</li>
+    </ul>
+  </li>
+</ul>
+<p><b>The <code>window</code> object</b></p>
+<p>Window properties and methods do not require a prefix, as<code> window<b>.</b> 
+  </code>is assumed.</p>
+<dl> 
+  <dt><code>window</code></dt>
+  <dd>The current window (not usually needed).</dd>
+  <dt><code>self</code></dt>
+  <dd>Same as <code>window</code>.</dd>
+  <dt><code>parent</code></dt>
+  <dd>If in a frame, the immediately enclosing window.</dd>
+  <dt><code>top</code></dt>
+  <dd>If in a frame, the outermost enclosing window.</dd>
+  <dt><code>frames[&nbsp;]</code></dt>
+  <dd>An array of frames (if any) within the current window. Frames are themselves 
+    windows. </dd>
+  <dt><code>length</code></dt>
+  <dd>The number of frames contained in this window.</dd>
+  <dt><code>document</code></dt>
+  <dd>The HTML document being displayed in this window.</dd>
+  <dt><code>location</code></dt>
+  <dd>The URL of the document being displayed in this window. If you set this 
+    property to a new URL, that URL will be loaded into this window. Calling<code><nobr> 
+    location.reload() </nobr></code>will refresh the window.</dd>
+  <dt><code>navigator</code></dt>
+  <dd>A reference to the Navigator (browser) object. Some properties of Navigator 
+    are:<br>
+    <code>appName</code> -- the name of the browser, such as &quot;Netscape&quot;<br>
+    <code>platform</code> -- the computer running the browser, such as &quot;Win32&quot;</dd>
+  <dt><code>status</code></dt>
+  <dd>A read/write string displayed in the status area of the browser window. 
+    Can be changed with a simple assignment statement.</dd>
+  <dt><br>
+    <br>
+  </dt>
+  <dt><code>alert(<i>string</i>)</code></dt>
+  <dd>Displays an alert dialog box containing the <code><i>string</i></code> and 
+    an <b>OK</b> button.</dd>
+  <dt><code>confirm(<i>string</i>)</code></dt>
+  <dd>Displays a confirmation box containing the <code><i>string</i></code> along 
+    with <b>Cancel</b> and <b>OK</b> buttons. Returns <code>true</code> if <b>OK</b> 
+    is pressed, <code>false</code> if <b>Cancel</b> is pressed.</dd>
+  <dt><code>prompt(<i>string</i>)</code></dt>
+  <dd>Displays a confirmation box containing the <code><i>string</i></code>, a 
+    text field, and <b>Cancel</b> and <b>OK</b> buttons. Returns the string entered 
+    by the user if <b>OK</b> is pressed, <code>null</code> if <b>Cancel</b> is 
+    pressed.</dd>
+  <dt><code>open(<i>URL</i>)</code></dt>
+  <dd>Opens a new window containing the document specified by the <code><i>URL</i></code>.</dd>
+  <dt><code>close()</code></dt>
+  <dd>Closes the given window (which should be a top-level window, not a frame).</dd>
+</dl>
+<p><b>The <code>document</code> object</b></p>
+<p>Because <code>window</code> is the default prefix, and <code>document</code> 
+  is a property of <code>window</code>, you must prefix these properties and methods 
+  with <code>document<b>.</b></code>, for example, <code><nobr>document.write(&quot;Hello&quot;)</nobr></code>.</p>
+<dl> 
+  <dt><code>anchors[&nbsp;]</code></dt>
+  <dd>An array of <code>anchors.length</code> Anchor objects, that is, objects 
+    representing <nobr><code>&lt;a name=...&gt;</code></nobr> tags. The only platform-independent 
+    property of an anchor is its <code>name</code>.</dd>
+  <dt><code>applets[&nbsp;]</code></dt>
+  <dd>An array of <code>applets.length</code> Applet objects. The properties of 
+    an applet are the <code>public</code> fields defined in the applet, and its 
+    methods are the <code>public</code> methods of the Applet. This is powerful 
+    and useful, but remember that (1) Java is strongly typed, so you must supply 
+    values of the correct types for the fields and method parameters, and (2) 
+    any changes or method calls you make are done in a separate Thread.</dd>
+  <dt><code>bgColor</code></dt>
+  <dd>The background color of the document. May be changed at any time.</dd>
+  <dt><code>forms[&nbsp;]</code></dt>
+  <dd>An array of <code>forms.length</code> Form elements. If the document contains 
+    only one form, it is <code>forms[0]</code>. Forms contain all the active user 
+    GUI objects.</dd>
+  <dt><code>images[&nbsp;]</code></dt>
+  <dd>An array of <code>images.length</code> Image objects. The most useful property 
+    of an image is its <code>src</code> (URL). If you assign a new URL to this 
+    property, that URL will be loaded.</dd>
+  <dt><code>links[&nbsp;]</code></dt>
+  <dd>An array of <code>links.length</code> Link objects. A link has several properties, 
+    including <code>href</code>, which holds the complete URL.</dd>
+  <dt><code>title</code></dt>
+  <dd>A read-only string containing the title of the document.</dd>
+  <dt><code>URL</code></dt>
+  <dd>A read-only string containing the URL of the document.</dd>
+  <dt><br>
+    <br>
+  </dt>
+  <dt><code>write(<i>string</i>)</code></dt>
+  <dd>Writes the specified <code><i>string</i></code> to the current document.</dd>
+</dl>
+<p><b>The <code>form</code> object</b></p>
+<p>A <code>document</code> may contain more than one <code>form</code>. The first 
+  (and typically the only) such form is referred to by<code> document.form[0]</code>.</p>
+<dl> 
+  <dt><code>elements[&nbsp;]</code></dt>
+  <dd>An array of <code>elements.length</code> form elements.</dd>
+</dl>
+<p>HTML form elements may all have a <code>name</code> attribute, for example, 
+  <code>&lt;input type=&quot;text&quot; name=&quot;data&quot; value=&quot;unknown&quot;&gt;</code>. 
+  It is strongly recommended that form elements be given a name, as this name 
+  may be referred to in JavaScript. For example, if form element 0 in form 0 has 
+  the name <code>&quot;data&quot;</code>, the following are equivalent:</p>
+<blockquote><code>document.forms[0].elements[0].value=5;<br>
+  data.value=5;</code> </blockquote>
+<h2><br>
+</h2>
+<h2>Attaching actions to form elements</h2>
+<p>Each form element can have attributes that act as event handlers. For example, 
+  a Button may be defined as follows:</p>
+<blockquote> 
+  <p><code>&lt;input type=&quot;button&quot; onclick=&quot;data.value=99;&quot; 
+    name=&quot;myButton&quot; value=&quot;Click me!&quot;&gt;</code></p>
+</blockquote>
+<p>Here, <code>onclick</code> is an event handler that tells JavaScript what to 
+  do (in this case, set <code>data.value</code> to <code>99</code>) when the button 
+  is clicked. Anything more complex than one or two statements should generally 
+  be implemented as a function call.</p>
+<p><b>Events</b></p>
+<p>Numerous events can occur, and not every form element will respond to every 
+  event. Browsers differ somewhat in which form elements will handle which events. 
+  Here are the events and the form elements that <i>should</i> be able to handle 
+  them. (<b>Note:</b> You will sometimes see these event names written with capital 
+  letters, for example <code>onMouseDown</code> instead of <code>onmousedown</code>. 
+  This works in HTML, which is case insensitive, but <i>does not work</i> in JavaScript, 
+  which is case sensitive.)</p>
+<ul>
+  <li><code>onload</code> -- the document or frameset has completed loading: <code>&lt;body&gt;</code>, 
+    <code>&lt;frameset&gt;</code> </li>
+  <li><code>onunload</code> -- the document or frameset is unloaded: <code>&lt;body&gt;</code>, 
+    <code>&lt;frameset&gt;</code> <br>
+    <br>
+  </li>
+  <li><code>onfocus</code> -- the form element gains focus (for example, by the 
+    user tabbing to it): <code>&lt;button&gt;</code>, <code>&lt;input&gt;</code>, 
+    <code>&lt;label&gt;</code>, <code>&lt;select&gt;</code>, <code>&lt;textarea&gt;</code> 
+  </li>
+  <li><code>onblur</code> -- the form element loses the focus: <code>&lt;button&gt;</code>, 
+    <code>&lt;input&gt;</code>, <code>&lt;label&gt;</code>, <code>&lt;select&gt;</code>, 
+    <code>&lt;textarea&gt;</code> <br>
+    <br>
+  </li>
+  <li><code>onclick</code> -- the form element is clicked: most elements</li>
+  <li><code>ondblclick</code> -- the form element is clicked twice in close succession: 
+    most elements</li>
+  <li><code>onmousedown</code> -- the mouse button is pressed while over the form 
+    element: most elements</li>
+  <li><code>onmouseover</code> -- the mouse is moved over the form element: most 
+    elements</li>
+  <li><code>onmouseout</code> -- the mouse is moved away from the form element: 
+    most elements</li>
+  <li><code>onmouseup</code> -- the mouse button is released while over the form 
+    element: most elements</li>
+  <li><code>onmousemove</code> -- the mouse is moved: most elements<br>
+    <br>
+  </li>
+  <li><code>onkeypress</code> -- a key is clicked while this form element has 
+    focus: <code>&lt;input&gt;</code>, <code>&lt;textarea&gt;</code></li>
+  <li><code>onkeydown</code> -- a key is depressed while this form element has 
+    focus: <code>&lt;input&gt;</code>, <code>&lt;textarea&gt;</code>, <code>&lt;body&gt;</code></li>
+  <li><code>onkeyup</code> -- a key is released while this form element has focus: 
+    <code>&lt;input&gt;</code>, <code>&lt;textarea&gt;</code>, <code>&lt;body&gt;</code><br>
+    <br>
+  </li>
+  <li><code>onabort</code> -- image loading has been interrupted: <code>&lt;img&gt;</code></li>
+  <li><code>onerror</code> -- there was an error loading the image: <code>&lt;img&gt;</code><br>
+    <br>
+  </li>
+  <li><code>onselect</code> -- the text is selected: <code>&lt;input&gt;</code>, 
+    <code>&lt;textarea&gt;</code></li>
+  <li><code>onchange</code> -- the form element loses focus with a different value 
+    than it had when it gained focus: <code>&lt;input&gt;</code>, <code>&lt;textarea&gt;</code>, 
+    <code>&lt;select&gt;</code><br>
+    <br>
+  </li>
+  <li><code>onreset</code> -- the user has clicked a Reset button; return <code>false</code> 
+    to prevent reset: <code>&lt;form&gt;</code></li>
+  <li><code>onsubmit</code> -- the user has clicked a Submit button; return <code>false</code> 
+    to prevent submission: <code>&lt;form&gt;</code></li>
+</ul>
+<p>The following table gives approximately the same information, organized by 
+  type of form element.</p>
+<table border=1 cellpadding="2" width="95%">
+  <tr bgcolor="#CCCCCC"> 
+    <td valign=TOP><b>Object</b></td>
+    <td><b>Event Handlers</b></td>
+  </tr>
+  <tr> 
+    <td valign=TOP><code>area </code></td>
+    <td> 
+      <table border="0" cellpadding="0" width="100%">
+        <tr> 
+          <td width="33%"><code>ondblclick()</code></td>
+          <td width="33%"><code>onmouseout()</code></td>
+          <td width="33%"><code>onmouseover()</code></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr> 
+    <td valign=TOP><code>input type=&quot;button&quot; </code></td>
+    <td> 
+      <table border="0" cellpadding="0" width="100%">
+        <tr>
+          <td width="33%"><code>onblur()</code></td>
+          <td width="33%"><code>onfocus()</code></td>
+          <td width="33%"><code>onmouseup()</code></td>
+        </tr>
+        <tr> 
+          <td width="33%"><code>onclick()</code></td>
+          <td width="33%"><code>onmousedown()</code></td>
+          <td width="33%">&nbsp;</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr> 
+    <td valign=TOP><code>checkbox </code></td>
+    <td> 
+      <table border="0" cellpadding="0" width="100%">
+        <tr> 
+          <td width="33%"><code>onblur()</code></td>
+          <td width="33%"><code>onclick()</code></td>
+          <td width="33%"><code>onfocus()</code> </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr> 
+    <td valign=TOP><code>document </code></td>
+    <td> 
+      <table border="0" cellpadding="0" width="100%">
+        <tr>
+          <td width="33%"><code>onclick()</code></td>
+          <td width="33%"><code>onkeypress()</code></td>
+          <td width="33%"><code>onmouseup()</code></td>
+        </tr>
+        <tr> 
+          <td width="33%"><code>ondblclick()</code></td>
+          <td width="33%"><code>onkeyup()</code></td>
+          <td width="33%">&nbsp;</td>
+        </tr>
+        <tr> 
+          <td width="33%"><code>onkeydown()</code></td>
+          <td width="33%"><code>onmousedown()</code></td>
+          <td width="33%">&nbsp;</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr> 
+    <td valign=TOP><code>fileupload</code></td>
+    <td> 
+      <table border="0" cellpadding="0" width="100%">
+        <tr> 
+          <td width="33%"><code>onblur()</code></td>
+          <td width="33%"><code>onchange()</code></td>
+          <td width="33%"><code>onfocus()</code> </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr> 
+    <td valign=TOP><code>form </code></td>
+    <td> 
+      <table border="0" cellpadding="0" width="100%">
+        <tr> 
+          <td width="33%"><code>onreset()</code></td>
+          <td width="33%"><code>onsubmit()</code></td>
+          <td width="33%">&nbsp;</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr> 
+    <td valign=TOP><code>frame </code></td>
+    <td> 
+      <table border="0" cellpadding="0" width="100%">
+        <tr>
+          <td width="33%"><code>onblur()</code></td>
+          <td width="33%"><code>onfocus()</code></td>
+          <td width="33%"><code>onresize()</code></td>
+        </tr>
+        <tr> 
+          <td width="33%"><code>ondragdrop()</code></td>
+          <td width="33%"><code>onload()</code></td>
+          <td width="33%"><code>onunload()</code></td>
+        </tr>
+        <tr> 
+          <td width="33%"><code>onerror()</code></td>
+          <td width="33%"><code>onmove()</code></td>
+          <td width="33%">&nbsp;</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr> 
+    <td valign=TOP><code>img </code></td>
+    <td> 
+      <table border="0" cellpadding="0" width="100%">
+        <tr>
+          <td width="33%"><code>onabort()</code></td>
+          <td width="33%"><code>onkeydown()</code></td>
+          <td width="33%"><code>onkeyup()</code></td>
+        </tr>
+        <tr> 
+          <td width="33%"><code>onerror()</code></td>
+          <td width="33%"><code>onkeypress()</code></td>
+          <td width="33%"><code>onload()</code> </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr> 
+    <td valign=TOP><code>layer </code></td>
+    <td> 
+      <table border="0" cellpadding="0" width="100%">
+        <tr>
+          <td width="33%"><code>onmouseover()</code></td>
+          <td width="33%"><code>onload()</code></td>
+          <td width="33%"><code>onblur()</code></td>
+        </tr>
+        <tr> 
+          <td width="33%"><code>onmouseout()</code></td>
+          <td width="33%"><code>onfocus()</code></td>
+          <td width="33%">&nbsp;</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr> 
+    <td valign=TOP><code>link </code></td>
+    <td>
+      <table border="0" cellpadding="0" width="100%">
+        <tr>
+          <td width="33%"><code>onclick()</code></td>
+          <td width="33%"><code>onkeypress()</code></td>
+          <td width="33%"><code>onmouseout()</code></td>
+        </tr>
+        <tr> 
+          <td width="33%"><code>ondblclick()</code></td>
+          <td width="33%"><code>onkeyup()</code></td>
+          <td width="33%"><code>onmouseup()</code></td>
+        </tr>
+        <tr> 
+          <td width="33%"><code>onkeydown()</code></td>
+          <td width="33%"><code>onmouseDown()</code></td>
+          <td width="33%"><code>onmouseover()</code></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr> 
+    <td valign=TOP><code>password </code></td>
+    <td>
+      <table border="0" cellpadding="0" width="100%">
+        <tr> 
+          <td width="33%"><code>onblur()</code></td>
+          <td width="33%"><code>onfocus()</code></td>
+          <td width="33%">&nbsp;</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr> 
+    <td valign=TOP><code>radio </code></td>
+    <td> 
+      <table border="0" cellpadding="0" width="100%">
+        <tr> 
+          <td width="33%"><code>onblur()</code></td>
+          <td width="33%"><code>onclick()</code></td>
+          <td width="33%"><code>onfocus()</code></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr> 
+    <td valign=TOP><code>reset </code></td>
+    <td>
+      <table border="0" cellpadding="0" width="100%">
+        <tr> 
+          <td width="33%"><code>onblur()</code></td>
+          <td width="33%"><code>onclick()</code></td>
+          <td width="33%"><code>onfocus()</code></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr> 
+    <td valign=TOP><code>select </code></td>
+    <td> 
+      <table border="0" cellpadding="0" width="100%">
+        <tr> 
+          <td width="33%"><code>onblur()</code></td>
+          <td width="33%"><code>onchange()</code></td>
+          <td width="33%"><code>onfocus()</code></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr> 
+    <td valign=TOP><code>submit </code></td>
+    <td>
+      <table border="0" cellpadding="0" width="100%">
+        <tr> 
+          <td width="33%"><code>onblur()</code></td>
+          <td width="33%"><code>onclick()</code></td>
+          <td width="33%"><code>onfocus()</code></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr> 
+    <td valign=TOP><code>input type=&quot;text&quot; </code></td>
+    <td>
+      <table border="0" cellpadding="0" width="100%">
+        <tr>
+          <td width="33%"><code>onblur()</code></td>
+          <td width="33%"><code>onfocus()</code></td>
+          <td width="33%">&nbsp;</td>
+        </tr>
+        <tr> 
+          <td width="33%"><code>onchange()</code></td>
+          <td width="33%"><code>onselect()</code></td>
+          <td width="33%">&nbsp;</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr> 
+    <td valign=TOP><code>textarea </code></td>
+    <td>
+      <table border="0" cellpadding="0" width="100%">
+        <tr>
+          <td width="33%"><code>onblur()</code></td>
+          <td width="33%"><code>onkeydown()</code></td>
+          <td width="33%"><code>onselect()</code></td>
+        </tr>
+        <tr> 
+          <td width="33%"><code>onchange()</code></td>
+          <td width="33%"><code>onkeypress()</code></td>
+          <td width="33%">&nbsp;</td>
+        </tr>
+        <tr> 
+          <td width="33%"><code>onfocus()</code></td>
+          <td width="33%"><code>onkeyup()</code></td>
+          <td width="33%">&nbsp;</td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+  <tr> 
+    <td valign=TOP><code>window </code></td>
+    <td> 
+      <table border="0" cellpadding="0" width="100%">
+        <tr> 
+          <td width="33%"><code>onblur()</code></td>
+          <td width="33%"><code>onfocus()</code></td>
+          <td width="33%"><code>onresize()</code></td>
+        </tr>
+        <tr> 
+          <td width="33%"><code>ondragdrop()</code></td>
+          <td width="33%"><code>onload()</code></td>
+          <td width="33%"><code>onunload()</code></td>
+        </tr>
+        <tr> 
+          <td width="33%"><code>onerror()</code></td>
+          <td width="33%"><code>onmove()</code></td>
+          <td width="33%">&nbsp;</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<p><b>Live examples</b></p>
+<p>This section is for viewing in a browser, as it contains &quot;live&quot; examples 
+  of JavaScript. If you are reading a printed copy, this section may not make 
+  much sense.</p>
+<p>Not all browsers respond to the same set of events on each form element. Your 
+  browser identifies itself as:</p>
+<blockquote> 
+  <script type="text/javascript">
+      document.write(navigator.appName + ", ")
+      document.write("version " + navigator.appVersion + "<br>")
+      document.write("Code: " + navigator.appCodeName +  "; Platform: " + navigator.platform)
+    </script>
+</blockquote>
+The following is a &quot;live&quot; test of capturing events from form elements. 
+Every form element contains the code <code><nobr>on<i>Event</i>="tell(this.name, 
+'on<i>Event</i>');"</nobr></code> for each of the following events: <code>onmousedown</code>, 
+<code>onmouseup</code>, <code>onclick</code>, <code>ondblclick</code>, <code>onfocus</code>, 
+<code>onblur</code>, <code>onmouseover</code>, <code>onmouseout</code>, <code>onchange</code>, 
+<code>onkeypress</code>, <code>onkeydown</code>, <code>onkeyup</code>, <code>onselect</code>, 
+and <code>onreset</code>. Use the mouse, keyboard, Tab and Return keys to explore 
+the behavior of these elements. You should expect to get different results in 
+different browsers. 
+<form method="post" action="">
+  <table border="1" cellpadding="8">
+    <tr> 
+      <td> <code>&lt;input type=&quot;button&quot;&gt;</code><br>
+        <input type="button" name="plainButton" value="Plain Button"
+			onMouseDown="tell(this.name, 'onmousedown');"
+			onMouseUp="tell(this.name, 'onmouseup');"
+			onClick="tell(this.name,'onclick');"
+			onDblClick="tell(this.name,'ondblclick');"
+			onFocus="tell(this.name, 'onfocus');"
+			onBlur="tell(this.name, 'onblur');"
+			onMouseOver="tell(this.name, 'onmouseover');"
+			onMouseOut="tell(this.name, 'onmouseout');"
+			onChange="tell(this.name, 'onchange');"
+			onKeyPress="tell(this.name, 'onkeypress');"
+			onKeyDown="tell(this.name, 'onkeydown');"
+			onKeyUp="tell(this.name, 'onkeyup');"
+			onSelect="tell(this.name, 'onselect');"
+			onReset="tell(this.name, 'onreset');"
+        >
+      </td>
+      <td> 
+        <p><code>&lt;input type=&quot;text&quot;&gt;</code><br>
+          <input type="text" name="textfield" value="Text field"
+			onMouseDown="tell(this.name, 'onmousedown');"
+			onMouseUp="tell(this.name, 'onmouseup');"
+			onClick="tell(this.name,'onclick');"
+			onDblClick="tell(this.name,'ondblclick');"
+			onFocus="tell(this.name, 'onfocus');"
+			onBlur="tell(this.name, 'onblur');"
+			onMouseOver="tell(this.name, 'onmouseover');"
+			onMouseOut="tell(this.name, 'onmouseout');"
+			onChange="tell(this.name, 'onchange');"
+			onKeyPress="tell(this.name, 'onkeypress');"
+			onKeyDown="tell(this.name, 'onkeydown');"
+			onKeyUp="tell(this.name, 'onkeyup');"
+			onSelect="tell(this.name, 'onselect');"
+			onReset="tell(this.name, 'onreset');"
+       >
+          <br>
+          <br>
+          <code>&lt;input type=&quot;password&quot;&gt;</code><br>
+          <input type="password" name="password" value="password"
+			onMouseDown="tell(this.name, 'onmousedown');"
+			onMouseUp="tell(this.name, 'onmouseup');"
+			onClick="tell(this.name,'onclick');"
+			onDblClick="tell(this.name,'ondblclick');"
+			onFocus="tell(this.name, 'onfocus');"
+			onBlur="tell(this.name, 'onblur');"
+			onMouseOver="tell(this.name, 'onmouseover');"
+			onMouseOut="tell(this.name, 'onmouseout');"
+			onChange="tell(this.name, 'onchange');"
+			onKeyPress="tell(this.name, 'onkeypress');"
+			onKeyDown="tell(this.name, 'onkeydown');"
+			onKeyUp="tell(this.name, 'onkeyup');"
+			onSelect="tell(this.name, 'onselect');"
+			onReset="tell(this.name, 'onreset');"
+          >
+        </p>
+      </td>
+      <td valign="top"> <code>&lt;select multiple&gt;</code><br>
+        <select name="select multiple" size="3" multiple bgcolor="white"
+			onMouseDown="tell(this.name, 'onmousedown');"
+			onMouseUp="tell(this.name, 'onmouseup');"
+			onClick="tell(this.name,'onclick');"
+			onDblClick="tell(this.name,'ondblclick');"
+			onFocus="tell(this.name, 'onfocus');"
+			onBlur="tell(this.name, 'onblur');"
+			onMouseOver="tell(this.name, 'onmouseover');"
+			onMouseOut="tell(this.name, 'onmouseout');"
+			onChange="tell(this.name, 'onchange');"
+			onKeyPress="tell(this.name, 'onkeypress');"
+			onKeyDown="tell(this.name, 'onkeydown');"
+			onKeyUp="tell(this.name, 'onkeyup');"
+			onSelect="tell(this.name, 'onselect');"
+			onReset="tell(this.name, 'onreset');"
+        ><option value="- A List -">list</option>
+          <option value="Red">red</option>
+          <option value="Orange">orange</option>
+          <option value="Yellow">yellow</option>
+          <option value="Green">green</option>
+          <option value="Blue">blue</option>
+          <option value="Indigo">indigo</option>
+          <option value="Violet">violet</option>
+                  </select>
+      </td>
+      <td><code>&lt;input type=&quot;hidden&quot;&gt;</code> 
+        <input type="hidden" name="hiddenField"
+			onMouseDown="tell(this.name, 'onmousedown');"
+			onMouseUp="tell(this.name, 'onmouseup');"
+			onClick="tell(this.name,'onclick');"
+			onDblClick="tell(this.name,'ondblclick');"
+			onFocus="tell(this.name, 'onfocus');"
+			onBlur="tell(this.name, 'onblur');"
+			onMouseOver="tell(this.name, 'onmouseover');"
+			onMouseOut="tell(this.name, 'onmouseout');"
+			onChange="tell(this.name, 'onchange');"
+			onKeyPress="tell(this.name, 'onkeypress');"
+			onKeyDown="tell(this.name, 'onkeydown');"
+			onKeyUp="tell(this.name, 'onkeyup');"
+			onSelect="tell(this.name, 'onselect');"
+			onReset="tell(this.name, 'onreset');"
+        >
+      </td>
+    </tr>
+    <tr> 
+      <td> <code>&lt;input type=&quot;submit&quot;&gt;</code><br>
+        <input type="submit" name="submit" value="Submit Button"
+			onMouseDown="tell(this.name, 'onmousedown');"
+			onMouseUp="tell(this.name, 'onmouseup');"
+			onClick="tell(this.name,'onclick');"
+			onDblClick="tell(this.name,'ondblclick');"
+			onFocus="tell(this.name, 'onfocus');"
+			onBlur="tell(this.name, 'onblur');"
+			onMouseOver="tell(this.name, 'onmouseover');"
+			onMouseOut="tell(this.name, 'onmouseout');"
+			onChange="tell(this.name, 'onchange');"
+			onKeyPress="tell(this.name, 'onkeypress');"
+			onKeyDown="tell(this.name, 'onkeydown');"
+			onKeyUp="tell(this.name, 'onkeyup');"
+			onSelect="tell(this.name, 'onselect');"
+			onReset="tell(this.name, 'onreset');"
+        >
+      </td>
+      <td> <code>&lt; input type="checkbox"&gt;</code><br>
+        <input type="checkbox" name="checkbox" value="checkbox"
+			onMouseDown="tell(this.name, 'onmousedown');"
+			onMouseUp="tell(this.name, 'onmouseup');"
+			onClick="tell(this.name,'onclick');"
+			onDblClick="tell(this.name,'ondblclick');"
+			onFocus="tell(this.name, 'onfocus');"
+			onBlur="tell(this.name, 'onblur');"
+			onMouseOver="tell(this.name, 'onmouseover');"
+			onMouseOut="tell(this.name, 'onmouseout');"
+			onChange="tell(this.name, 'onchange');"
+			onKeyPress="tell(this.name, 'onkeypress');"
+			onKeyDown="tell(this.name, 'onkeydown');"
+			onKeyUp="tell(this.name, 'onkeyup');"
+			onSelect="tell(this.name, 'onselect');"
+			onReset="tell(this.name, 'onreset');"
+        >
+        Study CIT597</td>
+      <td> 
+        <p><code>&lt;select&gt;</code><br>
+          <select name="select"
+			onMouseDown="tell(this.name, 'onmousedown');"
+			onMouseUp="tell(this.name, 'onmouseup');"
+			onClick="tell(this.name,'onclick');"
+			onDblClick="tell(this.name,'ondblclick');"
+			onFocus="tell(this.name, 'onfocus');"
+			onBlur="tell(this.name, 'onblur');"
+			onMouseOver="tell(this.name, 'onmouseover');"
+			onMouseOut="tell(this.name, 'onmouseout');"
+			onChange="tell(this.name, 'onchange');"
+			onKeyPress="tell(this.name, 'onkeypress');"
+			onKeyDown="tell(this.name, 'onkeydown');"
+			onKeyUp="tell(this.name, 'onkeyup');"
+			onSelect="tell(this.name, 'onselect');"
+			onReset="tell(this.name, 'onreset');"
+        >
+            <option value="- A Menu -">menu</option>
+            <option value="Red">red</option>
+            <option value="Green">green</option>
+            <option value="Blue">blue</option>
+          </select>
+        </p>
+      </td>
+      <td><code>&lt;img&gt;</code><img src="../../cit597-2004/Images/duke_wave.gif" width="49" height="55" name="img"
+			onMouseDown="tell(this.name, 'onmousedown');"
+			onMouseUp="tell(this.name, 'onmouseup');"
+			onClick="tell(this.name,'onclick');"
+			onDblClick="tell(this.name,'ondblclick');"
+			onFocus="tell(this.name, 'onfocus');"
+			onBlur="tell(this.name, 'onblur');"
+			onMouseOver="tell(this.name, 'onmouseover');"
+			onMouseOut="tell(this.name, 'onmouseout');"
+			onChange="tell(this.name, 'onchange');"
+			onKeyPress="tell(this.name, 'onkeypress');"
+			onKeyDown="tell(this.name, 'onkeydown');"
+			onKeyUp="tell(this.name, 'onkeyup');"
+			onSelect="tell(this.name, 'onselect');"
+			onReset="tell(this.name, 'onreset');"
+          ></td>
+    </tr>
+    <tr> 
+      <td> <code>&lt;input type=&quot;reset&quot;&gt;</code><br>
+        <input type="reset" name="reset" value="Reset Button"
+			onMouseDown="tell(this.name, 'onmousedown');"
+			onMouseUp="tell(this.name, 'onmouseup');"
+			onClick="tell(this.name,'onclick');"
+			onDblClick="tell(this.name,'ondblclick');"
+			onFocus="tell(this.name, 'onfocus');"
+			onBlur="tell(this.name, 'onblur');"
+			onMouseOver="tell(this.name, 'onmouseover');"
+			onMouseOut="tell(this.name, 'onmouseout');"
+			onChange="tell(this.name, 'onchange');"
+			onKeyPress="tell(this.name, 'onkeypress');"
+			onKeyDown="tell(this.name, 'onkeydown');"
+			onKeyUp="tell(this.name, 'onkeyup');"
+			onSelect="tell(this.name, 'onselect');"
+			onReset="tell(this.name, 'onreset');"
+        >
+      </td>
+      <td> <code>&lt;input type=&quot;radio&quot;&gt;</code><br>
+        <input type="radio" name="radiobutton" value="radiobutton"
+			onMouseDown="tell(this.name, 'onmousedown');"
+			onMouseUp="tell(this.name, 'onmouseup');"
+			onClick="tell(this.name,'onclick');"
+			onDblClick="tell(this.name,'ondblclick');"
+			onFocus="tell(this.name, 'onfocus');"
+			onBlur="tell(this.name, 'onblur');"
+			onMouseOver="tell(this.name, 'onmouseover');"
+			onMouseOut="tell(this.name, 'onmouseout');"
+			onChange="tell(this.name, 'onchange');"
+			onKeyPress="tell(this.name, 'onkeypress');"
+			onKeyDown="tell(this.name, 'onkeydown');"
+			onKeyUp="tell(this.name, 'onkeyup');"
+			onSelect="tell(this.name, 'onselect');"
+			onReset="tell(this.name, 'onreset');"
+        >
+        Radio button 1<br>
+        <input type="radio" name="radiobutton" value="radiobutton"
+			onMouseDown="tell(this.name, 'onmousedown');"
+			onMouseUp="tell(this.name, 'onmouseup');"
+			onClick="tell(this.name,'onclick');"
+			onDblClick="tell(this.name,'ondblclick');"
+			onFocus="tell(this.name, 'onfocus');"
+			onBlur="tell(this.name, 'onblur');"
+			onMouseOver="tell(this.name, 'onmouseover');"
+			onMouseOut="tell(this.name, 'onmouseout');"
+			onChange="tell(this.name, 'onchange');"
+			onKeyPress="tell(this.name, 'onkeypress');"
+			onKeyDown="tell(this.name, 'onkeydown');"
+			onKeyUp="tell(this.name, 'onkeyup');"
+			onSelect="tell(this.name, 'onselect');"
+			onReset="tell(this.name, 'onreset');"
+        >
+        Radio button 2 </td>
+      <td> <code>&lt;select&gt;<br>
+        &nbsp;&lt;option value=&quot;<i>URL</i>&quot;&gt;</code><br>
+        <select name="menu1" 
+            onMouseDown="tell(this.name, 'onmousedown');"
+			onMouseUp="tell(this.name, 'onmouseup');"
+			onClick="tell(this.name,'onclick');"
+			onDblClick="tell(this.name,'ondblclick');"
+			onFocus="tell(this.name, 'onfocus');"
+			onBlur="tell(this.name, 'onblur');"
+			onMouseOver="tell(this.name, 'onmouseover');"
+			onMouseOut="tell(this.name, 'onmouseout');"
+			onChange="tell(this.name, 'onchange');"
+			onKeyPress="tell(this.name, 'onkeypress');"
+			onKeyDown="tell(this.name, 'onkeydown');"
+			onKeyUp="tell(this.name, 'onkeyup');"
+			onSelect="tell(this.name, 'onselect');"
+			onReset="tell(this.name, 'onreset');"
+        >
+          <option value="http://www.cis.upenn.edu/~matuszek/cit591-2002" selected>CIT591</option>
+          <option value="http://www.cis.upenn.edu/~matuszek/cit597-2002">CIT597</option>
+        </select>
+      </td>
+      <td><code>&lt;a href&gt;</code><br>
+        <a href="http://www.google.com" name="a href"
+			onMouseDown="tell(this.name, 'onmousedown');"
+			onMouseUp="tell(this.name, 'onmouseup');"
+			onClick="tell(this.name,'onclick');"
+			onDblClick="tell(this.name,'ondblclick');"
+			onFocus="tell(this.name, 'onfocus');"
+			onBlur="tell(this.name, 'onblur');"
+			onMouseOver="tell(this.name, 'onmouseover');"
+			onMouseOut="tell(this.name, 'onmouseout');"
+			onChange="tell(this.name, 'onchange');"
+			onKeyPress="tell(this.name, 'onkeypress');"
+			onKeyDown="tell(this.name, 'onkeydown');"
+			onKeyUp="tell(this.name, 'onkeyup');"
+			onSelect="tell(this.name, 'onselect');"
+			onReset="tell(this.name, 'onreset');"
+      >http://www.google.com</a> </td>
+    </tr>
+  </table>
+  <br>
+  <table border="0" cellpadding="3">
+    <tr> 
+      <td><b>What just happened:</b></td>
+    </tr>
+    <tr> 
+      <td> 
+        <textarea name="result" cols="50" rows="12" tabindex="-1"></textarea>
+      </td>
+    </tr>
+    <tr> 
+      <td> 
+        <input type="button" value="Clear results" onClick="result.value=''" name="button">
+      </td>
+    </tr>
+  </table>
+</form>
+<p>&nbsp; </p>
+<h2>Simple JavaScript snippets</h2>
+<dl> 
+  <dt><b>Write text (and HTML) to page:</b></dt>
+  <dd> 
+    <pre>document.write(&quot;This is &lt;i&gt;easy.&lt;/i&gt;&quot;);</pre>
+    <script type="text/javascript">document.write("This is <i>easy.</i><br>");</script>
+  </dd>
+</dl>
+<dl> 
+  <dt><b>Get the date:</b></dt>
+  <dd> 
+    <pre>&lt;script type=&quot;text/javascript&quot;&gt;
+    var d = new Date()
+    document.write(d.getDate() + &quot;/&quot;)
+    document.write((d.getMonth() + 1) + &quot;/&quot;)
+    document.write(d.getFullYear())
+&lt;/script&gt;</pre>
+    <script type="text/javascript">
+    var d = new Date()
+    document.write(d.getDate() + "/") 
+    document.write((d.getMonth() + 1) + "/")
+    document.write(d.getFullYear())
+    </script>
+  </dd>
+</dl>
+<dl>
+  <dt><b>Get and format the date:</b></dt>
+<dd>
+<pre>&lt;script type=&quot;text/javascript&quot;&gt;
+    var d=new Date()
+    var weekday=new Array(&quot;Sunday&quot;,&quot;Monday&quot;,&quot;Tuesday&quot;,&quot;Wednesday&quot;,
+                                       &quot;Thursday&quot;,&quot;Friday&quot;,&quot;Saturday&quot;)
+    var monthname=new Array(&quot;Jan&quot;,&quot;Feb&quot;,&quot;Mar&quot;,&quot;Apr&quot;,&quot;May&quot;,&quot;Jun&quot;,&quot;Jul&quot;,
+                                            &quot;Aug&quot;,&quot;Sep&quot;,&quot;Oct&quot;,&quot;Nov&quot;,&quot;Dec&quot;)
+    document.write(weekday[d.getDay()] + &quot;, &quot;)
+    document.write(monthname[d.getMonth()] + &quot; &quot; + d.getDate() + &quot;, &quot;)
+    document.write(d.getFullYear())
+&lt;/script&gt;</pre>
+    <script type="text/javascript">
+    var d=new Date()
+    var weekday=new Array("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday")
+    var monthname=new Array("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")
+    document.write("<br>" + weekday[d.getDay()] + ", ")
+    document.write(monthname[d.getMonth()] + " " + d.getDate() + ", ")
+    document.write(d.getFullYear())
+    </script>
+  </dd>
+</dl>
+<dl>
+  <dt><b>Get a random floating point number between 0 and 1:</b></dt>
+<dd><pre>&lt;script type=&quot;text/javascript&quot;&gt;
+    document.write(Math.random())
+&lt;/script&gt;</pre>
+  </dd>
+</dl>
+<dl> 
+  <dd> 
+    <script type="text/javascript">
+document.write(Math.random())
+</script>
+  </dd>
+</dl>
+<dl> 
+  <dt><b>Get a random integer between 1 and N:</b></dt>
+  <dd> 
+    <pre>&lt;script type=&quot;text/javascript&quot;&gt;<br>    var max = 10;<br>    number=Math.random()*max + 1;<br>    document.write(Math.floor(number));<br>&lt;/script&gt;</pre>
+    <script type="text/javascript">
+    var max = 10;
+    number=Math.random()*max + 1;
+    document.write(Math.floor(number));
+    </script>
+  </dd>
+</dl>
+<dl> 
+  <dt><b>Display an alert box (when button is clicked):</b></dt>
+  <dd>
+    <pre>&lt;form&gt;&nbsp // Buttons can only occur within forms
+    &lt;input type=&quot;button&quot; name=&quot;Submit&quot; value=&quot;Alert!&quot;
+              onclick=&quot;alert('Oh oh, something happened!');&quot;&gt;
+&lt;/form&gt;</pre>
+    <form> // Buttons can only occur within forms
+      <input type="button" name="Submit" value="Alert!"
+             onclick="alert('Oh oh, something happened!');">
+    </form>
+  </dd>
+</dl>
+</body>
+</html>

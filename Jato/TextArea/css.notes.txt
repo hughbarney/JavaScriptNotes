@@ -1,0 +1,13 @@
+
+
+Because of CSS Specificity. A selector's weighting is evaluated based
+
+
+
+on the components that make it up, with id's given a weighting of
+
+
+#ids are weighted 100
+.classes are weighted 10
+p elements are weighted 1
+

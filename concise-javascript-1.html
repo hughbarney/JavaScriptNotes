@@ -1,0 +1,1494 @@
+<html>
+<head>
+<title>Concise JavaScript I</title>
+<meta NAME="GENERATOR" CONTENT="Microsoft FrontPage 3.0">
+<style TYPE="text/css"></style>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body BGCOLOR="#FFFFFF">
+<font size="+3"><b>A Concise Introduction to JavaScript<br>
+</b></font> <b><font size="+2">Part I: The Core Language</font> </b> 
+<p>Copyright ©2002 by David Matuszek</p>
+<p>JavaScript is a language used in HTML (Web) pages, and understood by most Web 
+  browsers, to add interactivity to Web pages. Implementation is browser-dependent, 
+  that is, frequently buggy. The language described herein is JavaScript 1.5, 
+  also known as ECMA v3. I attempt to discuss primarily platform-independent features, 
+  but make no attempt to keep track of what doesn't work in various browsers.</p>
+<p>Because JavaScript is used almost exclusively in Web pages, it cannot access 
+  files and has very limited networking capabilities. The only graphics capability 
+  it has is the ability to create HTML programmatically.</p>
+<p>My main resource in writing this paper is the excellent book, <b>JavaScript: 
+  The Definitive Guide</b>, by David Flanigan, published by O'Reilly.</p>
+<blockquote>
+  <div align="left"> 
+    <table border="3" cellpadding="6">
+      <tr> 
+        <th colspan="3" bgcolor="#CCCCCC">Quick Links</th>
+      </tr>
+      <tr> 
+        <td width="30%"><a href="#data-types">Data types</a> </td>
+        <td width="30%"><a href="#operators">Operators </a></td>
+        <td width="30%"><a href="#objects">Objects </a></td>
+      </tr>
+      <tr> 
+        <td><a href="#identifiers">Identifiers </a></td>
+        <td><a href="#expressions">Expressions </a></td>
+        <td><a href="#arrays">Arrays </a></td>
+      </tr>
+      <tr> 
+        <td><a href="#comments">Comments </a></td>
+        <td><a href="#statements">Statements </a></td>
+        <td><a href="#strings">Strings </a></td>
+      </tr>
+      <tr> 
+        <td><a href="#variable-declarations">Variable declarations</a></td>
+        <td><a href="#functions">Functions</a></td>
+         
+        <td><a href="#regular-expressions">Regular expressions</a> </td>
+         </tr>
+      <tr> 
+        <td colspan="3"><a href="concise-javascript-2.html"><u><font color="#1822CD">Part 
+          II: Client-Side JavaScript</font></u> </a></td>
+      </tr>
+    </table>
+    <br>
+  </div>
+</blockquote>
+
+<h2><a name="data-types"></a><br>
+  Data types</h2>
+
+<p>JavaScript has three primitive types: <code>number</code>, <code>string</code>, 
+  and <code>boolean</code>.Everything else is an <code>object</code>.</p>
+<p>A <code>number</code> may be written as an integer or as a real number; however 
+  written, numbers are stored as floating-point. Special predefined numbers include 
+  <code>Infinity</code>, <code>NaN</code> (&quot;not a number&quot;), <code>Number.NaN</code> 
+  (same as <code>NaN</code>), <code>Number.MIN_VALUE</code>, <code>Number.MAX_VALUE</code>, 
+  <code>Number.NEGATIVE_INFINITY</code>, and <code>Number.POSITIVE_INFINITY</code> 
+  (same as <code>Infinity</code>). A hexadecimal literal begins with <code>0x</code> 
+  or <code>0X</code>. A nonzero number should never be written with a leading 
+  zero (e.g. <code>0123</code>), because some implementations will treat this 
+  as an octal number and others won't.</p>
+<p>A <code>string</code> is a sequence of zero or more characters enclosed in 
+  <i>either</i> single quotes (<code>'hello'</code>) or double quotes (<code>&quot;hello&quot;</code>). 
+  There is no &quot;character&quot; data type. Special characters are:</p>
+<table cellpadding="4">
+  <tr> 
+    <td valign="baseline"><code>\0</code></td>
+    <td valign="baseline">&nbsp;NUL</td>
+    <td valign="baseline">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td valign="baseline"><code>\r</code></td>
+    <td valign="baseline">&nbsp;carriage return</td>
+    <td valign="baseline">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td valign="baseline"><code>\'</code></td>
+    <td valign="baseline">&nbsp;single quote</td>
+  </tr>
+  <tr> 
+    <td valign="baseline"><code>\b</code></td>
+    <td valign="baseline">&nbsp;backspace</td>
+    <td valign="baseline"></td>
+    <td valign="baseline"><code>\t</code></td>
+    <td valign="baseline">&nbsp;horizontal tab</td>
+    <td valign="baseline"></td>
+    <td valign="baseline"><code>\&quot;</code></td>
+    <td valign="baseline">&nbsp;double quote</td>
+  </tr>
+  <tr> 
+    <td valign="baseline"><code>\f</code></td>
+    <td valign="baseline">&nbsp;form feed</td>
+    <td valign="baseline"></td>
+    <td valign="baseline"><code>\v</code></td>
+    <td valign="baseline">&nbsp;vertical tab</td>
+    <td valign="baseline"></td>
+    <td valign="baseline"><code>\x<i>DD</i></code></td>
+    <td valign="baseline">&nbsp;Unicode hex <i>DD</i></td>
+  </tr>
+  <tr> 
+    <td valign="baseline"><code>\n</code></td>
+    <td valign="baseline">&nbsp;newline</td>
+    <td valign="baseline"></td>
+    <td valign="baseline"><code>\\</code></td>
+    <td valign="baseline">&nbsp;backslash</td>
+    <td valign="baseline"></td>
+    <td valign="baseline"><code>\x<i>DDDD</i></code></td>
+    <td valign="baseline">&nbsp;Unicode hex <i>DDDD</i></td>
+  </tr>
+</table>
+<p>A <code>boolean</code> has one of two values: <code>true</code> or <code>false</code>. 
+  When other values are converted into <code>boolean</code> (typically, for use 
+  as a test), the values <code>0</code>, <code>&quot;0&quot;</code>, the empty 
+  string, <code>undefined</code>, <code>null</code>, and <code>NaN</code> are 
+  converted to <code>false</code>, and other values are converted to <code>true</code>.</p>
+<p>An <code>object</code> is a collection of named values, called its <i>properties</i>. 
+  If the name of a property is known to the programmer, it can be referenced by 
+  the syntax <i><code>object</code></i><code>.</code><i><code>property_name</code></i>, 
+  for example, <code>image.width</code>. If the name can be computed, it can be 
+  referenced by the syntax <code><i>object</i>[<i>expression</i>]</code>, for 
+  example, <code>image[&quot;width&quot;]</code>. The special value <code>null</code> 
+  is an object with no properties. A similar value, <code>undefined</code>, means 
+  that the variable has never been assigned a value or that the requested property 
+  does not exist.</p>
+<p>Functions, arrays, regular expressions, errors, and dates are all special types 
+  of <code>object</code>. In addition, there are &quot;wrapper&quot; types <code>Number</code>, 
+  <code>String</code>, and <code>Boolean</code>, to allow object-like operations 
+  on primitive values; but JavaScript automatically converts between primitives 
+  and wrappers as needed, so the programmer almost never sees these wrapper types.</p>
+<h2><a name="identifiers"></a><br>
+  Identifiers </h2>
+<p>Identifiers consist of letters (as defined by Unicode), digits, underscores, 
+  and/or dollar signs; the first character may not be a digit. Case is significant 
+  in JavaScript <i>but not in HTML;</i> since JavaScript names are frequently 
+  used in HTML, this can lead to some strange errors if you are not careful about 
+  case. By convention, the names of variables, properties, functions, and methods 
+  should begin with a lowercase letter; names of constructors should begin with 
+  a capital letter. Names may be any length.</p>
+
+<p>The following are keywords in JavaScript, and may not be used as names. Italicized 
+  keywords are not currently in use, but are reserved for possible future extensions 
+  to the language.</p>
+
+<blockquote> 
+  <table border="0" cellpadding="2">
+    <tr> 
+      <td><code><i>abstract</i></code></td>
+      <td><code><i>debugger&nbsp;</i></code></td>
+      <td><code><i>goto</i></code></td>
+      <td><code><i>int</i></code></td>
+      <td><code><i>public</i></code></td>
+      <td><code>switch</code></td>
+    </tr>
+    <tr> 
+      <td><code><i>boolean</i></code></td>
+      <td><code>default</code></td>
+      <td><code><i>final</i></code></td>
+      <td><code>instanceof&nbsp;</code></td>
+      <td><code>return</code></td>
+      <td><code><i>synchronized</i></code></td>
+    </tr>
+    <tr> 
+      <td><code>break</code></td>
+      <td><code>delete</code></td>
+      <td><code>finally</code></td>
+      <td><code><i>interface</i></code></td>
+      <td><code>throw</code></td>
+      <td><code>this</code></td>
+    </tr>
+    <tr> 
+      <td><code><i>byte</i></code></td>
+      <td><code>do</code></td>
+      <td><code><i>float</i></code></td>
+      <td><code><i>long</i></code></td>
+      <td><code><i>throws</i></code></td>
+      <td><code>typeof</code></td>
+    </tr>
+    <tr> 
+      <td><code>case</code></td>
+      <td><code><i>double</i></code></td>
+      <td><code>if</code></td>
+      <td><code><i>native</i></code></td>
+      <td><code><i>transient&nbsp;</i></code></td>
+      <td><code>var</code></td>
+    </tr>
+    <tr> 
+      <td><code>catch</code></td>
+      <td><code>else</code></td>
+      <td><code><i>implements&nbsp;</i></code></td>
+      <td><code>new</code></td>
+      <td><code>true</code></td>
+      <td><code>void</code></td>
+    </tr>
+    <tr> 
+      <td><code><i>char</i></code></td>
+      <td><code><i>enum</i></code></td>
+      <td><code><i>import</i></code></td>
+      <td><code>null</code></td>
+      <td><code>try</code></td>
+      <td><code><i>volatile</i></code></td>
+    </tr>
+    <tr> 
+      <td><code><i>class</i></code></td>
+      <td><code><i>export</i></code></td>
+      <td><code>in</code></td>
+      <td><code><i>package</i></code></td>
+      <td><code><i>short</i></code></td>
+      <td><code>while</code></td>
+    </tr>
+    <tr> 
+      <td><code><i>const</i></code></td>
+      <td><code><i>extends</i></code></td>
+      <td><code>for</code></td>
+      <td><code><i>private</i></code></td>
+      <td><code><i>static</i></code></td>
+      <td><code>with</code></td>
+    </tr>
+    <tr> 
+      <td><code>continue&nbsp;</code></td>
+      <td><code>false</code></td>
+      <td><code>function</code></td>
+      <td><code><i>protected</i></code></td>
+      <td><code><i>super</i></code></td>
+      <td><code></code></td>
+    </tr>
+  </table>
+</blockquote>
+
+<h2><a name="comments"><br>
+  Comments</a></h2>
+
+<p><code>// </code>introduces a comment that extends to the end of the line. Multi-line 
+  comments start with <code>/*</code> and end with <code>*/</code>. Inside a comment, 
+  <code>// </code>and <code>/*</code> have no special meaning (so you cannot &quot;nest&quot; 
+  comments). Inside a quoted string or regular expression,<code> // </code>and 
+  <code>/*</code> do <em>not</em> start a comment.</p>
+
+<h2><a name="variable-declarations"></a><br>
+  Variable declarations</h2>
+<p>JavaScript variables are <i>untyped:</i> any variable can hold any type of 
+  value.</p>
+<p>Variables are declared with the keyword <code>var</code>, along with an optional 
+  initial value; for example, <code><nobr>var x</nobr></code> or <code><nobr>var 
+  x = 5</nobr></code>. Alternatively, a variable may be declared simply by assigning 
+  it a value, for example, <nobr><code>x = 5</code></nobr>. It is not an error 
+  to declare the same variable more than once.</p>
+<p>If a variable has been declared but not assigned a value, it has the special 
+  value <code>undefined</code>; it is not necessarily an error to use this value. 
+  If a variable has never been declared, it <i>is</i> an error to try to use its 
+  value.</p>
+<p>A variable that is declared by <code>var</code> within a function is local 
+  to that function, and can be used <i>anywhere</i> within the function (even 
+  above the point of declaration). A variable that is declared outside any function, 
+  <i>or</i> is declared by assignment only (without using the keyword <code>var</code>), 
+  is <i>global</i> and can be referenced from anywhere in the HTML document. The 
+  formal parameters to a function are treated as local variables. If a local variable 
+  has the same name as a global variable, the name refers to the local variable.</p>
+<blockquote>
+  <table border="1" cellpadding="2">
+    <tr> 
+      <th>Where declared</th>
+      <th>How declared</th>
+      <th>Scope</th>
+    </tr>
+    <tr>
+      <td rowspan="3">Within a function</td>
+      <td>As a formal parameter</td>
+      <td>Local to the function</td>
+    </tr>
+    <tr> 
+      <td>With <code>var</code></td>
+      <td>Local to the function</td>
+    </tr>
+    <tr> 
+      <td>By assignment</td>
+      <td>Global</td>
+    </tr>
+    <tr> 
+      <td rowspan="2">Not within a function</td>
+      <td>With <code>var</code></td>
+      <td>Global</td>
+    </tr>
+    <tr> 
+      <td>By assignment</td>
+      <td>Global</td>
+    </tr>
+  </table>
+</blockquote>
+<p>The only scopes in JavaScript are <i>global</i> and <i>local to the function.</i> 
+  A variable may be declared in a <code>for</code> statement, that is,<code> <nobr>for 
+  (var <i>variable</i> ...) ...</nobr></code><nobr></nobr>, but its scope is still 
+  either global or local to the function.</p>
+<p>Functions may be nested, that is, a function may be defined within (and local 
+  to) another function. A variable declared within nested functions is local to 
+  the immediately enclosing function.</p>
+<p>Variables are actually <i>properties of an object.</i> Global variables are 
+  properties of the <i>global object.</i> Function variables are properties of 
+  a short-lived<i> call object</i>. </p>
+<h2><a name="operators"></a><br>
+  Operators</h2>
+<table border="1">
+  <tr> 
+    <th bgcolor="#CCCCCC"> 
+      <p align="left">Operator 
+    </th>
+    <th bgcolor="#CCCCCC"> 
+      <p align="left">Meaning 
+    </th>
+    <th bgcolor="#CCCCCC"> 
+      <p align="left">Position 
+    </th>
+    <th bgcolor="#CCCCCC"> 
+      <p align="left">Precedence 
+    </th>
+    <th bgcolor="#CCCCCC"> 
+      <p align="left">Associativity 
+    </th>
+  </tr>
+  <tr> 
+    <td align="center" NOWRAP><code><var>function_name </var>(<i>args</i>)</code> 
+    </td>
+    <td>Call the function </td>
+    <td>postfix </td>
+    <td align="center">15</td>
+    <td>left to right </td>
+  </tr>
+  <tr> 
+    <td align="center" NOWRAP><code><var>array_name </var>[<i>index</i>]</code> 
+    </td>
+    <td>Index into the array </td>
+    <td>postfix </td>
+    <td align="center">15</td>
+    <td>left to right </td>
+  </tr>
+  <tr> 
+    <td align="center" NOWRAP><code><var>object</var> . <var>property</var></code> 
+    </td>
+    <td>The property of the object </td>
+    <td>infix </td>
+    <td align="center">15</td>
+    <td>left to right </td>
+  </tr>
+  <tr> 
+    <td align="center" NOWRAP><code>new <i>constructor</i></code></td>
+    <td>Call the constructor</td>
+    <td>prefix</td>
+    <td align="center">15</td>
+    <td>right to left</td>
+  </tr>
+  <tr> 
+    <td align="center" NOWRAP><code>!</code> </td>
+    <td>Boolean negation (true &lt;--&gt; false) </td>
+    <td>prefix </td>
+    <td align="center">14</td>
+    <td>right to left </td>
+  </tr>
+  <tr> 
+    <td align="center" NOWRAP><code>~</code> </td>
+    <td>Bitwise negation (change every bit) </td>
+    <td>prefix </td>
+    <td align="center">14</td>
+    <td>right to left </td>
+  </tr>
+  <tr> 
+    <td align="center" NOWRAP><code>++</code> </td>
+    <td>Add one </td>
+    <td>prefix or postfix </td>
+    <td align="center">14</td>
+    <td>right to left </td>
+  </tr>
+  <tr> 
+    <td align="center" NOWRAP><code>--</code> </td>
+    <td>Subtract one </td>
+    <td>prefix or postfix </td>
+    <td align="center">14</td>
+    <td>right to left </td>
+  </tr>
+  <tr> 
+    <td align="center" NOWRAP><code>+</code> </td>
+    <td>Unary plus (does nothing) </td>
+    <td>prefix </td>
+    <td align="center">14</td>
+    <td>right to left </td>
+  </tr>
+  <tr> 
+    <td align="center" NOWRAP><code>-</code> </td>
+    <td>Unary minus (negation) </td>
+    <td>prefix </td>
+    <td align="center">14</td>
+    <td>right to left </td>
+  </tr>
+  <tr> 
+    <td align="center" NOWRAP><code>delete</code></td>
+    <td>Remove a property</td>
+    <td>prefix</td>
+    <td align="center">14</td>
+    <td>right to left </td>
+  </tr>
+  <tr> 
+    <td align="center" NOWRAP><code>typeof</code></td>
+    <td>Return data type</td>
+    <td>prefix</td>
+    <td align="center">14</td>
+    <td>right to left </td>
+  </tr>
+  <tr> 
+    <td align="center" NOWRAP><code>void</code></td>
+    <td>Return <code>undefined</code></td>
+    <td>prefix</td>
+    <td align="center">14</td>
+    <td>right to left </td>
+  </tr>
+  <tr> 
+    <td align="center" NOWRAP><code>*</code> </td>
+    <td>Multiply </td>
+    <td>infix </td>
+    <td align="center">13</td>
+    <td>left to right </td>
+  </tr>
+  <tr> 
+    <td align="center" NOWRAP><code>/</code> </td>
+    <td>Floating-point divide </td>
+    <td>infix </td>
+    <td align="center">13</td>
+    <td>left to right </td>
+  </tr>
+  <tr> 
+    <td align="center" NOWRAP><code>%</code> </td>
+    <td>Remainder</td>
+    <td>infix </td>
+    <td align="center">13</td>
+    <td>left to right </td>
+  </tr>
+  <tr> 
+    <td align="center" NOWRAP><code>+</code> </td>
+    <td>Add (numbers) or<br>
+      concatenate (strings)</td>
+    <td>infix </td>
+    <td align="center">12</td>
+    <td>left to right </td>
+  </tr>
+  <tr> 
+    <td align="center" NOWRAP><code>-</code> </td>
+    <td>Subtract </td>
+    <td>infix </td>
+    <td align="center">12</td>
+    <td>left to right </td>
+  </tr>
+  <tr> 
+    <td align="center" NOWRAP><code>&lt;&lt;</code> </td>
+    <td>Shift bits left, vacated bits are set to zero </td>
+    <td>infix </td>
+    <td align="center">11</td>
+    <td>left to right </td>
+  </tr>
+  <tr> 
+    <td align="center" NOWRAP><code>&gt;&gt;</code> </td>
+    <td>Shift bits right, vacated bits are set to sign bit</td>
+    <td>infix </td>
+    <td align="center">11</td>
+    <td>left to right </td>
+  </tr>
+  <tr> 
+    <td align="center" NOWRAP><code>&gt;&gt;&gt;</code> </td>
+    <td>Shift bits right, vacated bits are set to zero</td>
+    <td>infix </td>
+    <td align="center">11</td>
+    <td>left to right </td>
+  </tr>
+  <tr> 
+    <td align="center" NOWRAP><code>&lt; </code></td>
+    <td>Less than </td>
+    <td>infix </td>
+    <td align="center">10</td>
+    <td>left to right </td>
+  </tr>
+  <tr> 
+    <td align="center" NOWRAP><code>&lt;=</code> </td>
+    <td>Less than or equal to </td>
+    <td>infix </td>
+    <td align="center">10</td>
+    <td>left to right </td>
+  </tr>
+  <tr> 
+    <td align="center" NOWRAP><code>&gt;</code> </td>
+    <td>Greater than </td>
+    <td>infix </td>
+    <td align="center">10</td>
+    <td>left to right </td>
+  </tr>
+  <tr> 
+    <td align="center" NOWRAP><code>&gt;=</code> </td>
+    <td>Greater than or equal to </td>
+    <td>infix </td>
+    <td align="center">10</td>
+    <td>left to right </td>
+  </tr>
+  <tr> 
+    <td align="center" NOWRAP><code>instanceof</code> </td>
+    <td>Test type of left operand</td>
+    <td>infix</td>
+    <td align="center">10</td>
+    <td>left to right</td>
+  </tr>
+  <tr> 
+    <td align="center" NOWRAP><code>in</code></td>
+    <td>Test if property exists</td>
+    <td>infix</td>
+    <td align="center">10</td>
+    <td>left to right</td>
+  </tr>
+  <tr> 
+    <td align="center" NOWRAP><code>==</code> </td>
+    <td>Equal to </td>
+    <td>infix </td>
+    <td align="center">9</td>
+    <td>left to right </td>
+  </tr>
+  <tr> 
+    <td align="center" NOWRAP><code>!=</code> </td>
+    <td>Not equal to </td>
+    <td>infix </td>
+    <td align="center">9</td>
+    <td>left to right </td>
+  </tr>
+  <tr> 
+    <td align="center" NOWRAP><code>===</code></td>
+    <td>Strictly equal to</td>
+    <td>infix</td>
+    <td align="center">9</td>
+    <td>left to right</td>
+  </tr>
+  <tr> 
+    <td align="center" NOWRAP><code>!==</code></td>
+    <td>Not strictly equal to</td>
+    <td>infix</td>
+    <td align="center">9</td>
+    <td>left to right</td>
+  </tr>
+  <tr> 
+    <td align="center" NOWRAP><code>&amp;</code> </td>
+    <td>Bitwise AND </td>
+    <td>infix </td>
+    <td align="center">8</td>
+    <td>left to right </td>
+  </tr>
+  <tr> 
+    <td align="center"><code>^</code> </td>
+    <td>Bitwise exclusive OR </td>
+    <td>infix </td>
+    <td align="center">7</td>
+    <td>left to right </td>
+  </tr>
+  <tr> 
+    <td align="center"><code>|</code> </td>
+    <td>Bitwise OR </td>
+    <td>infix </td>
+    <td align="center">6</td>
+    <td>left to right </td>
+  </tr>
+  <tr> 
+    <td align="center"><code>&amp;&amp;</code> </td>
+    <td>Boolean AND </td>
+    <td>infix </td>
+    <td align="center">5</td>
+    <td>left to right </td>
+  </tr>
+  <tr> 
+    <td align="center"><code>||</code> </td>
+    <td>Boolean OR </td>
+    <td>infix </td>
+    <td align="center">4</td>
+    <td>left to right </td>
+  </tr>
+  <tr> 
+    <td align="center" NOWRAP><code><var>cond</var> ? <var>expr<sub>1</sub></var> 
+      : <var>expr<sub>2</sub></var></code> </td>
+    <td>If cond is true then expr1, else expr2 </td>
+    <td>double infix </td>
+    <td align="center">3</td>
+    <td>right to left </td>
+  </tr>
+  <tr> 
+    <td align="center"><code>=</code> </td>
+    <td>Assignment, &quot;gets&quot; </td>
+    <td>infix </td>
+    <td align="center">2</td>
+    <td>right to left </td>
+  </tr>
+  <tr> 
+    <td align="center"><code>+=</code> </td>
+    <td>Addition assignment operator: <code>a+=b</code> is the same as <code>a=a+b</code> 
+    </td>
+    <td>infix </td>
+    <td align="center">2</td>
+    <td>right to left </td>
+  </tr>
+  <tr> 
+    <td align="center"><code>-=</code> </td>
+    <td>Subtraction assignment operator </td>
+    <td>infix </td>
+    <td align="center">2</td>
+    <td>right to left </td>
+  </tr>
+  <tr> 
+    <td align="center"><code>*=</code> </td>
+    <td>Multiplication assignment operator </td>
+    <td>infix </td>
+    <td align="center">2</td>
+    <td>right to left </td>
+  </tr>
+  <tr> 
+    <td align="center"><code>/=</code> </td>
+    <td>Division assignment operator </td>
+    <td>infix </td>
+    <td align="center">2</td>
+    <td>right to left </td>
+  </tr>
+  <tr> 
+    <td align="center"><code>%=</code> </td>
+    <td>Remainder assignment operator </td>
+    <td>infix </td>
+    <td align="center">2</td>
+    <td>right to left </td>
+  </tr>
+  <tr> 
+    <td align="center"><code>&amp;=</code> </td>
+    <td>Bitwise AND assignment operator </td>
+    <td>infix </td>
+    <td align="center">2</td>
+    <td>right to left </td>
+  </tr>
+  <tr> 
+    <td align="center"><code>^=</code> </td>
+    <td>Bitwise exclusive OR assignment operator </td>
+    <td>infix </td>
+    <td align="center">2</td>
+    <td>right to left </td>
+  </tr>
+  <tr> 
+    <td align="center"><code>|=</code> </td>
+    <td>Bitwise OR assignment operator </td>
+    <td>infix </td>
+    <td align="center">2</td>
+    <td>right to left </td>
+  </tr>
+  <tr> 
+    <td align="center"><code>&lt;&lt;=</code> </td>
+    <td>Left shift assignment operator </td>
+    <td>infix </td>
+    <td align="center">2</td>
+    <td>right to left </td>
+  </tr>
+  <tr> 
+    <td align="center"><code>&gt;&gt;=</code> </td>
+    <td>Right shift assignment operator sign extension</td>
+    <td>infix </td>
+    <td align="center">2</td>
+    <td>right to left </td>
+  </tr>
+  <tr> 
+    <td align="center"><code>&gt;&gt;&gt;=</code> </td>
+    <td>Right shift assignment operator, zero fill</td>
+    <td>infix </td>
+    <td align="center">2</td>
+    <td>right to left </td>
+  </tr>
+  <tr> 
+    <td align="center"><code>,</code> </td>
+    <td>Multiple evaluation</td>
+    <td>infix </td>
+    <td align="center">1</td>
+    <td>left to right </td>
+  </tr>
+</table>
+<p><b>Notes:</b> </p>
+<p>There is no such thing as an &quot;integer divide&quot; operation. <code>5/2 
+  </code>gives <code>2.5</code>. </p>
+<p>When used as a prefix, <code>++</code> adds one to its operand before using 
+  the value of the operand in an expression. When used as a suffix, <code>++</code> 
+  uses the original value of the operand in the enclosing expression, and adds 
+  one to the operand afterwards. Similar remarks hold for the <code>--</code> 
+  operator. </p>
+<p>The boolean operators <code>&amp;&amp;</code> and <code>||</code> are short-circuit 
+  operators; if the first operand of <code>&amp;&amp;</code> is false, or the 
+  first operand of <code>||</code> is true, the second operand will never be evaluated. 
+  For example, in <code>if(i&nbsp;&lt;&nbsp;size&nbsp;&amp;&amp;&nbsp;a[i]&nbsp;==&nbsp;0)...</code>, 
+  where <code>size</code> is the size of the array, the array will not be accessed 
+  if <code>i</code> is too large.</p>
+<p>JavaScript automatically converts values to an appropriate type. For example, 
+  when a string is &quot;added&quot; to a number, the number is converted to a 
+  string and the two values are concatenated. When a string is multiplied by a 
+  number, JavaScript first tries to convert the string to a number. When a string 
+  or number is used as a test, it is automatically converted to a boolean. And 
+  so on.</p>
+<p>JavaScript does <i>not</i> provide a coercion operator to explicitly convert 
+  a value to a given type.</p>
+<p>Any value can be converted to its equivalent boolean value by preceding it 
+  with<code> !!</code>.</p>
+<p>If the operands of <code>==</code> or<code> != </code>are of different types, 
+  JavaScript first tries to convert them to the same type. If the operands of 
+  <code>===</code> or <code>!==</code> are of different types, they are considered 
+  to be unequal.</p>
+<p>The numeric comparisons <code>&lt;</code>, <code>&lt;=</code>, <code>==</code>, 
+  <code>!=</code>, <code>&gt;=</code>, <code>&gt;</code> can also be used with 
+  strings.</p>
+<p>The various assignment operators <i>are</i> operators; that is, they have a 
+  value and may be embedded in a larger expression.</p>
+<p><code>new <i>constructor</i>(<i>arguments</i>) </code>creates a new object 
+  and calls a constructor function to initialize it. For <code>new</code> <i>only</i> 
+  (that is, not for any other kind of function call), if there are no arguments, 
+  the parentheses may be omitted.</p>
+<p><code>delete</code> attempts to remove the specified object property, variable, 
+  or array element, and returns true if successful. Variables declared with <code>var</code> 
+  cannot be deleted.</p>
+<p><code>typeof</code> gets the type of its operand and returns one of the following 
+  strings: <code>&quot;number&quot;</code>, <code>&quot;string&quot;</code>, <code>&quot;boolean&quot;</code>, 
+  <code>&quot;object&quot;</code>, <code>&quot;function&quot;</code>, or <code>&quot;undefined&quot;</code>.</p>
+<p><code>void</code> ignores its operand and returns <code>undefined</code>.</p>
+<p><code><i>object</i> instanceof <i>constructor</i> </code>returns <code>true</code> 
+  if its lefthand operator is an object of the type created by its righthand operator 
+  (which must be the name of a constructor).</p>
+<p><code><i>name</i> in <i>object</i></code> returns <code>true</code> if the 
+  given <i><code>object</code></i> (which may be an array) has a property with 
+  the given <code><i>name</i></code>.</p>
+<p><code><i>object </i>. <i>property </i></code>returns the value of the <i><code>property</code></i> 
+  for the given <i><code>object</code></i>, or <code>undefined</code> if the <i><code>object</code></i> 
+  does not have that <i><code>property</code></i>. The <i><code>property</code></i> 
+  must be given as a simple identifier. </p>
+<h2><a name="expressions"><br>
+  Expressions</a></h2>
+<p>An <i>expression</i> is any JavaScript code that results in a value. Expressions 
+  may be as simple as a single constant or single variable. </p>
+<p>Operators with higher <i>precedence</i> (indicated by larger numbers) are performed 
+  before those with lower precedence. For example, in the expression <code>2*3+4*5</code>, 
+  the multiplications are done before the addition, because multiplication has 
+  higher precedence than addition. </p>
+<p>When operators have equal precedence, the <i>associativity</i> (&quot;left 
+  to right,&quot; or &quot;right to left&quot;) determines which operations are 
+  done first. For example, substraction has left to right associativity, so <code>10-5-3</code> 
+  means <code>(10-5)-3</code> rather than <code>10-(5-3)</code>. Assignment has 
+  right to left associativity, so <code>a=b=c+5</code> means <code>a=(b=c+5)</code> 
+  rather than <code>(a=b)=c+5</code>. Most common operators, other than the assignment 
+  operators, associate left to right.</p>
+<p>Parentheses can be used to override the above rules and specify an explicit 
+  order of evaluation. Parentheses are also used to show the order of evaluation 
+  when it might not be obvious.</p>
+<h2><a name="statements"></a><br>
+  Statements</h2>
+<p>Statements are terminated by a semicolon or by the end of the line. Semicolons 
+  are required only to separate two or more statements on the same line. If a 
+  statement needs to extend over two lines, take care to separate it in place 
+  where the first line cannot be understood as a complete statement.</p>
+<blockquote>
+<table border="0" cellpadding="2">
+  <tr> 
+    <td valign="top"><b>Good:</b></td>
+    <td><code>w = a + b +<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;c + d</code></td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td valign="top"><b>Bad:</b></td>
+    <td><code>w = a + b<br>
+      &nbsp;&nbsp;+ c + d</code></td>
+  </tr>
+</table>
+</blockquote>
+
+<table BORDER="1" CELLPADDING="4" width="98%">
+  <tr> 
+    <th VALIGN="top" bgcolor="#CCCCCC"> 
+      <p ALIGN="left">Statement 
+    </th>
+    <th bgcolor="#CCCCCC"> 
+      <p ALIGN="left">Meaning 
+    </th>
+  </tr>
+  <tr> 
+    <td VALIGN="top"><code><var>expression</var>;</code> </td>
+    <td>Any expression may be used as a statement; however, unless the expression 
+      has a side effect, the computed value is simply discarded.<br>
+      Example expressions that have side effects:<br>
+      <code>&nbsp;&nbsp;a = b + c;<br>
+      &nbsp;&nbsp;i++;<br>
+      &nbsp;&nbsp;printf (&quot;r = %d\n&quot;, r);</code> </td>
+  </tr>
+  <tr> 
+    <td VALIGN="top"><code>{&nbsp;<var>statements</var> }</code> </td>
+    <td>The &quot;compound&quot; statement, used to group several statements into 
+      one. </td>
+  </tr>
+  <tr> 
+    <td VALIGN="top"><code>if (<var>expression</var>)<br>
+      &nbsp;&nbsp;<var>statement</var>;</code> </td>
+    <td align="center"> <img src="Images/if-then.gif" width="150" height="193"></td>
+  </tr>
+  <tr> 
+    <td VALIGN="top"><code>if (<var>expression</var>)<br>
+      &nbsp;&nbsp;<var>statement<sub>1</sub></var>;<br>
+      else<br>
+      &nbsp;&nbsp;<var>statement<sub>2</sub></var>;</code> </td>
+    <td align="center"><img src="Images/if-then-else.gif" width="283" height="191"></td>
+  </tr>
+  <tr> 
+    <td VALIGN="top"><code>while (<var>expression</var>)<br>
+      &nbsp;&nbsp;<var>statement</var>;</code> </td>
+    <td> 
+      <p align="center"><img src="Images/while-loop.gif" width="161" height="210"> 
+    </td>
+  </tr>
+  <tr> 
+    <td VALIGN="top"><code>for (<i>var</i> in <i>object</i>)<br>
+      &nbsp;&nbsp;<i>statement</i>;</code></td>
+    <td align="center"><img src="Images/for-in.gif" width="207" height="173"></td>
+  </tr>
+  <tr> 
+    <td VALIGN="top"><code>do<br>
+      &nbsp;&nbsp;<var>statement</var><br>
+      while (<var>expression</var>);</code> </td>
+    <td> 
+      <p align="center"><img src="Images/do-loop.gif" width="143" height="191"> 
+    </td>
+  </tr>
+  <tr> 
+    <td VALIGN="top"><code>for&nbsp;(<var>expr<sub>1</sub></var>;&nbsp;<var>expr<sub>2</sub></var>;&nbsp;<var>expr<sub>3</sub></var>)<br>
+      &nbsp;&nbsp;<var>statement</var>;</code> </td>
+    <td> 
+      <p align="center"><img src="Images/for-loop.gif" width="180" height="320"> 
+    </td>
+  </tr>
+  <tr> 
+    <td VALIGN="top"> 
+      <pre><code>switch (<var>expression</var>) {
+  case <var>value<sub>1</sub></var> : <var>statements<sub>1</sub></var>;
+  case <var>value<sub>2</sub></var> : <var>statements<sub>2</sub></var>;
+  ...
+  default : <var>statements<sub>N</sub></var>;
+}</code></pre>
+    </td>
+    <td> 
+      <p align="center"><img src="Images/switch.gif" width="221" height="328"> 
+    </td>
+  </tr>
+  <tr> 
+    <td valign="top"><code><var>label</var>: <var>statement</var> ;</code> </td>
+    <td>Any statement may be labeled, but it really only makes sense to label 
+      loop statements and <code>switch</code> statements. Labels are used in conjunction 
+      with the <code>break</code> and <code>continue</code> statements. </td>
+  </tr>
+  <tr> 
+    <td valign="top"><code>break;</code> </td>
+    <td>Exit the innermost enclosing loop or switch statement. Cannot be used 
+      outside a loop or switch statement. </td>
+  </tr>
+  <tr> 
+    <td VALIGN="top"><code>break <i>label</i>;</code> </td>
+    <td>Exit the enclosing loop or switch statement with the given label. Cannot 
+      be used outside the labeled loop or switch statement. </td>
+  </tr>
+  <tr> 
+    <td valign="top"><code>continue;</code> </td>
+    <td>Return to the top of the innermost enclosing loop. Cannot be used except 
+      in a loop. </td>
+  </tr>
+  <tr> 
+    <td VALIGN="top"><code>continue <i>label</i>;</code> </td>
+    <td>Return to the top of the enclosing loop with the given label. Cannot be 
+      used outside the labeled loop.</td>
+  </tr>
+  <tr> 
+    <td VALIGN="top"><code>try {<br>
+      &nbsp;&nbsp;<i>statements<sub>1</sub></i><br>
+      } catch (<i>identifier</i>) {<br>
+      &nbsp;&nbsp;<i>statements<sub>2</sub></i><br>
+      }</code></td>
+    <td align="center"><img src="Images/try-catch.gif" width="266" height="131"></td>
+  </tr>
+  <tr> 
+    <td VALIGN="top"><code>try {<br>
+      &nbsp;&nbsp;<i>statements<sub>1</sub></i><br>
+      } catch (<i>identifier</i>) {<br>
+      &nbsp;&nbsp;<i>statements<sub>2</sub></i><br>
+      } finally {<br>
+      &nbsp;&nbsp;<i>statements<sub>3</sub></i><br>
+      } </code></td>
+    <td align="center"><img src="Images/try-catch-finally.gif" width="266" height="174"></td>
+  </tr>
+  <tr> 
+    <td VALIGN="top"><code>with <var>object<br>
+      &nbsp;&nbsp;statement </var>;</code> </td>
+    <td>Use the object as the default prefix for variables in the statement.</td>
+  </tr>
+  <tr> 
+    <td valign="top"><code>return <var>expression</var>;</code> </td>
+    <td>Evaluate the expression and return it as the value of the function. </td>
+  </tr>
+  <tr> 
+    <td valign="top"><code>return;</code> </td>
+    <td>Return from a function. </td>
+  </tr>
+</table>
+
+<p><b>&nbsp;Notes:</b> </p>
+
+<p>The <code>if</code>, <code>while</code>, <code>do</code>, <code>for</code>, 
+  and <code>with</code> statements each control a single statement. In order to 
+  control multiple statements, use braces to group the controlled statements into 
+  a compound statement. </p>
+
+<p>Each case in the <code>switch</code> statement can consist of multiple statements;
+braces may improve readability but are not necessary. </p>
+
+<p>Whichever group of statements is selected by the <code>switch</code> statement, the
+computer will execute those statements <i>and all remaining statements in the switch;</i>
+this is <i>not</i> what the programmer usually wants. A strongly recommended style is to
+use <code>break</code> as the last statement in each group of statements, <i>including</i>
+the last group, and to include a comment whenever the <code>break</code> is deliberately
+(as opposed to accidentally) omitted. </p>
+
+<p>The <code>default</code> case of a <code>switch</code> statement is optional. 
+  If omitted, and no other case matches, the <code>switch</code> statement does 
+  nothing.</p>
+<p>The <code>try</code> statement tries to execute the first block of statements; 
+  if an error occurs at <i>any</i> point during the execution, control <i>immediately</i> 
+  transfers to the <code>catch</code> block.</p>
+<p>Although not shown above, the <code>try</code> statement may have multiple 
+  <code>catch</code> blocks; in this case, the format of each catch block (except 
+  possibly the last) is <nobr><code>catch (<i>identifier</i> if <i>expression</i>) 
+  {...}</code></nobr>, where the block is executed if the <i><code>expression</code></i> 
+  is true. Only the first successful <code>catch</code> block will be executed.</p>
+<p>When a <code>try</code> statement includes a <code>finally</code> clause, that 
+  clause <i>will</i> be executed, regardless of what happens in the <code>try</code> 
+  or <code>catch</code> part. For example, if the <code>try</code> part contains 
+  a <code>return</code> statement, the return action will be delayed until after 
+  the <code>finally</code> clause has executed.</p>
+
+<h2><a name="functions"><br>
+  Functions</a></h2>
+<p>A function is a block of code that can be &quot;invoked&quot; (called). Functions 
+  should normally be defined in the<code> &lt;head&gt; </code>element of the HTML 
+  document, to ensure that they will be defined before they are needed. Functions 
+  may be recursive. Functions may be nested within other functions.</p>
+Example definition:
+<blockquote>
+  <pre>function average(x, y) {  // x and y are formal parameters
+  var sum;                     // this declares sum as a local variable<br>  g = x;                         // this declares g as a global variable
+  sum = g + y;
+  return sum / 2;
+} </pre>
+</blockquote>
+Example call:
+<p> 
+  <blockquote><code>avg = average(5, 10);</code></blockquote>
+<p><b>Defining functions</b></p>
+<p>The function <code>square</code> may be defined in any of these ways:</p>
+<ol>
+  <li><code>function square(x) { return x * x; }</code></li>
+  <li><code>var square = new Function(&quot;x&quot;, &quot;return x * x;&quot;); 
+    </code></li>
+  <li><code>var square = function(x) { return x * x; };</code></li>
+  <li><code>var square = function sqr(x) { return x * x; };</code></li>
+</ol>
+<p>(1) is a <i>function statement</i>. Function statements may be placed as top-level 
+  code in the HTML document, or as a top-level statement within another function. 
+  Function statements may not be enclosed in other kinds of statements, such as 
+  compound statements or loops. The word <code>var</code> is not used (except 
+  possibly in the function body).</p>
+<p>(2) uses the<code> Function() </code><i>constructor</i>. This constructor takes 
+  any number of string arguments; the last argument is the body of the function, 
+  and the preceding arguments are the formal parameters. Since the function body 
+  is given as a string, it is possible to use string methods to construct the 
+  function body.</p>
+<p>(3) uses a <i>function literal</i>. Functions are <i>first-class objects.</i> 
+  That is, a function is a data value, and can be used like any other piece of 
+  data: assigned to variables, passed as parameters, etc. <code><nobr>function(x) 
+  { return x * x; };</nobr></code> is an <i>anonymous</i> function literal, which 
+  in this example we assign to the variable <code>square</code>.</p>
+<p>(4) is the same as (3), but with a <i>temporary</i> function name, <code>sqr</code>. 
+  Temporary function names are available <i>only</i> within the function body, 
+  where they can be used to invoke the function recursively; but the final result 
+  is still an <i>anonymous</i> function.</p>
+<p>Functions may be defined within other functions, and are local to the enclosing 
+  function:</p>
+<blockquote><pre>function hypotenuse(x, y) {
+    function square(x) { return x * x; }
+    return Math.sqrt(square(x) + square(y));
+}</pre></blockquote>
+<b>Functions are data</b>
+<p>Functions may be assigned to variables:</p>
+<p>
+  <blockquote>
+    <pre>var square2 = square;
+result = square2(25);<br><br>myArray[10] = square;<br>result = myArray[10](25); </pre>
+  </blockquote>
+Functions may be assigned to properties. A function assigned to a property is 
+called a <i>method</i>. Within a method, <code>this</code> refers to the <i>call 
+object,</i> that is to the object that holds the property. 
+<p></p>
+<p> 
+<blockquote> 
+  <pre>  myRect = { width: 8,<br>                    height: 9,
+                    area: function() { return this.height * this.width; }
+                 }
+  document.write(myRect.area());</pre>
+</blockquote>
+<p>Functions may be passed as parameters:</p>
+<p> 
+  <blockquote><code>myArray.sort(function(a,b) { return a - b; });</code></blockquote>
+<p></p>
+<p>Functions can have properties:</p>
+<p>
+  <blockquote><code>myFunction.callCount = 0;<br>
+  function myFunction() { myFunction.callCount++; <i>...whatever..</i>.; }</code></blockquote>
+<p></p>
+<p><b>Miscellaneous facts about functions</b></p>
+<p> Primitive values (<code>number</code>, <code>string</code>, <code>boolean</code>) 
+  are passed to a function by value; objects are passed by reference. As a result, 
+  changing the value of a parameter within a function does not change the value 
+  outside the function, but changing the properties of an object passed as a parameter 
+  <i>does</i> change their values outside the function.</p>
+<p>Within a function body, <code>arguments</code> is a special object that holds 
+  the actual parameters that were passed to the function. While <code>arguments</code> 
+  is not really an array, you can use <code>arguments.length</code> to find out 
+  how many arguments the function was actually called with, and <code>arguments[i]</code> 
+  to access the i<sup>th</sup> argument. Using the elements of <code>arguments</code> 
+  has exactly the same effect as using the corresponding named arguments (if any). 
+  You can use <code>arguments</code> to write functions that take a variable number 
+  of arguments. In addition, <code>arguments.callee</code> refers to the function 
+  itself; this can be used to create anonymous recursive functions:</p>
+<p> 
+  <blockquote><code>function(n) { return n &lt;= 1 ? 1 : n * arguments.callee(n 
+    - 1); }</code></blockquote>
+<p></p>
+<p>Both <nobr><code>myFunction.call(myObject, <i>arg<sub>0</sub>, ..., arg<sub>N</sub></i>)</code></nobr> 
+  and <nobr><code>myFunction.apply(myObject, <i>arg<sub>0</sub>, ..., arg<sub>N</sub></i>)</code></nobr> 
+  call <code>myFunction</code> as if it were a method of <code>myObject</code>; 
+  that is, <code>this</code> is set to <code>myObject</code> prior to execution.</p>
+<h2><a name="objects"></a><br>
+  Objects</h2>
+<p><b>Properties</b></p>
+<p>Object have properties; properties have values. A property is basically a variable 
+  that is attached to an object. Properties may be added to or deleted from an 
+  object at any time.</p>
+<p>If you know the name of a property, you can refer to it with dot notation: 
+  <code>myObject.myProperty</code>, <code>owner.name</code>, <code>myCar.make</code>. 
+  If you do not know the name of a property, but you can get it from a variable 
+  or expression, you can refer to it with bracket notation: <code>teacher[course]</code>, 
+  <nobr><code>teacher[&quot;CIT&quot; + number]</code></nobr>. </p>
+<p><b>Creating objects</b></p>
+<p>You can create a new, &quot;blank&quot; object with:<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code>var myCar = new Object();</code></p>
+<p>You can add fields to this object (or any other object) with:<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code>myCar.make = &quot;Pontiac&quot;; myCar.year 
+  = 1996;</code> </p>
+<p>You can create an object with an &quot;object literal&quot;:<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code>var myCar = { make: &quot;Pontiac&quot;, 
+  year: 1996 };</code></p>
+<p>You can create an object with a constructor that you write:<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code>var myCar = Car(&quot;Pontiac&quot;, 1996);</code><br>
+  where:<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code>function Car(m, y) { this.make = m; this.year 
+  = y; }</code></p>
+<p>You should write a constructor if you want to define a number of similar objects. 
+  Within the constructor, the keyword <code>this</code> (which is required, not 
+  assumed) refers to the new object. By default, the constructor returns the newly 
+  created object <code>this</code>, but you can explicitly return some other object. 
+  When an object is created by calling a constructor, the test <nobr><code><i>object</i> 
+  instanceof <i>constructor</i></code></nobr> (for example, <nobr><code>myCar 
+  instanceof Car</code></nobr>) will return <code>true</code>. It is conventional 
+  to capitalize the names of constructors.</p>
+<p><b>Object prototypes</b></p>
+<p>Each JavaScript object belongs to a class, and each class has a <i>prototype</i>. 
+  The properties of an object belong to that object alone. If you want a property 
+  or function shared across all instances of a class, you need to attach them 
+  to the class prototype. Prototype properties are similar to <code>static</code> 
+  values and methods in Java.</p>
+<p>For example, to ensure that every <code>Car</code> has four wheels, you might 
+  write:<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code>Car.prototype.wheelCount = 4;</code></p>
+<p>You can attach a method to a single object like this:<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code>myCar.age = function() { return 2002 - this.year; 
+  }</code> </p>
+<p>You can attach a method to all instances of a class like this:<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code>Car.prototype.age = function() { return 
+  2002 - this.year; }</code></p>
+<p>You can attach a method to a class like this:<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code>Car.prototype.fuel = function() { return 
+  &quot;gasoline&quot;; }</code></p>
+<p></p>
+<p>The keyword <code>this</code> should not be used in a method that belongs to 
+  a class.</p>
+<p>To <i>read</i> (get the value of) a property, say <code>myObj.myProp</code>, 
+  JavaScript first checks to see if the particular object <code>myObj</code> has 
+  the property, and if so, returns its value; otherwise, it checks to see if the 
+  object's prototype has the property. However, to <i>write</i> (set the value 
+  of) a property, JavaScript only examines the object itself; it does not use 
+  the object's prototype. To set the value of a property inherited from a prototype, 
+  you must refer to it explicitly, as for instance <code>myObj.prototype.myProp</code>.</p>
+<p>Built-in classes, such as <code>String</code> and <code>Date</code>, also have 
+  prototypes, and you can assign new properties to them.</p>
+<p>Every object inherits a<code> toString() </code>method from its prototype, 
+  to convert the object into a string, but the result usually isn't very useful. 
+  You can override<code> toString() </code>with a more useful version.</p>
+<h2><a name="arrays"></a><br>
+  Arrays</h2>
+
+<p>An array is an object with some special features.</p>
+<p>You can create an array (say, <code>a</code>) as follows:</p>
+<ul>
+  <li><code>var a = new Array();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// an array with 
+    no elements (initially) </code></li>
+  <li><code>var a = new Array(10);&nbsp;// an array with 10 undefined elements</code></li>
+  <li><code>var a = new Array(&quot;red&quot;, 0xFFFF00, &quot;green&quot;); // 
+    three elements, as given</code></li>
+  <li><code>var a = [&quot;red&quot;, 0xFFFF00, &quot;green&quot;]; //using an 
+    array literal</code></li>
+</ul>
+<p>Arrays are zero-based; <code>a[0] </code>is the first element, <nobr><code>a[a.length 
+  - 1]</code></nobr> is the last. All arrays have a <code>length</code> property, 
+  which is always one larger than the index of the last occupied location in the 
+  array. <code>length</code> is automatically kept up to date. You can set <code>length</code> 
+  to a different value: If you make it smaller, array elements are discarded, 
+  while if you make it larger, the new elements have the value <code>undefined</code>.</p>
+<p>You can add elements to the array simply by assigning to them, for example, 
+  <nobr><code>a[5000]=1;</code></nobr>. Arrays are sparse: that is, array locations 
+  that are undefined do not take up space in the computer. Array indices must 
+  be in the range <code>0</code> to <code>2<sup>32</sup>-1</code>. You can delete 
+  elements from an array with the <code>delete</code> operator. Deleting elements 
+  does not change the length of the array, or change the locations of the remaining 
+  elements.</p>
+<p><b>Array methods</b></p>
+<dl> 
+  <dt><code>join()</code></dt>
+  <dd>Converts all the elements of the array to strings and concatenates them, 
+    with a comma separator.</dd>
+  <dt><code>join(<i>string</i>)</code></dt>
+  <dd>Converts all the elements of the array to strings and concatenates them, 
+    using the given <code><i>string</i></code> as a separator.</dd>
+  <dt><code>reverse()</code></dt>
+  <dd>Reverses the elements of the array <i>in place,</i> that is, no new array 
+    is created.</dd>
+  <dt><code>sort()</code></dt>
+  <dd>Sorts the array in place, in alphabetical order.</dd>
+  <dt><code>sort(<i>function</i>)</code></dt>
+  <dd>Sorts the array in place. The <code><i>function</i></code> takes two arguments, 
+    and returns a negative number if the first element is judged &quot;less than&quot; 
+    the second, zero if the two elements are &quot;equal,&quot; and a positive 
+    number if the first element should be considered &quot;larger.&quot;</dd>
+  <dt><code>concat(<i>arg<sub>1</sub></i>, ..., <i>arg<sub>N</sub></i>)</code> 
+    or <code>concat([<i>arg<sub>1</sub></i>, ..., <i>arg<sub>N</sub></i>])</code></dt>
+  <dd>Creates and returns a new array with all the elements of the old array, 
+    and also the elements <code><i>arg<sub>1</sub></i>, ..., <i>arg<sub>N</sub></i></code>.</dd>
+  <dt><code>slice(<i>start</i>, <i>end</i>)</code></dt>
+  <dd>Returns a new array consisting of elements <code><i>start</i></code> through 
+    <nobr><code><i>end </i>- 1</code></nobr> of the original array.</dd>
+  <dt><code>splice(<i>start</i>)</code></dt>
+  <dd>Removes all elements from index location <code><i>start</i></code> to the 
+    end of the array, and returns them in a new array.</dd>
+  <dt><code>splice(<i>start, count</i>)</code></dt>
+  <dd>Removes <code><i>count</i></code> elements from the array, starting at index 
+    location <code><i>start</i></code>, and returns them in a new array.</dd>
+  <dt><code>splice(<i>start, count, value<sub>1</sub>, ..., value<sub>N</sub></i>)</code></dt>
+  <dd>Removes <code><i>count</i></code> elements from the array, starting at index 
+    location <code><i>start</i></code>, and replaces them with new elements <code><i>value<sub>1</sub>, 
+    ..., value<sub>N</sub></i></code>. The removed elements are returned in a 
+    new array.</dd>
+  <dt><code>push(<i>value<sub>1</sub>, ..., value<sub>N</sub></i>)</code></dt>
+  <dd>Adds <code><i>value<sub>1</sub>, ..., value<sub>N</sub></i></code> to the 
+    end of the array; the return value is the new length of the array.</dd>
+  <dt><code>pop()</code></dt>
+  <dd>Removes and returns the last value in the array.<code></code></dd>
+  <dt><code>unshift(<i>value<sub>1</sub>, ..., value<sub>N</sub></i>)</code></dt>
+  <dd>Adds <code><i>value<sub>1</sub>, ..., value<sub>N</sub></i></code> to the 
+    beginning of the array; the return value is the new length of the array.</dd>
+  <dt><code>shift()</code></dt>
+  <dd>Removes and returns the first value in the array. Remaining elements are 
+    all shifted down one place.</dd>
+  <dt><code>toString()</code></dt>
+  <dd>Creates and returns a comma-separated list of the string representations 
+    of each element in the array.</dd>
+</dl>
+<h2><a name="strings"><br>
+  Strings</a></h2>
+
+<p>A <code>string</code> is a primitive value consisting of a sequence of zero 
+  or more characters. A <code>String</code> (capitalized) is a wrapper object 
+  for a <code>string</code>. The methods in this section are actually <code>String</code> 
+  methods, but JavaScript converts between the primitive and the wrapper as needed.</p>
+<p>Strings have a <code>length</code> property, which is the number of characters 
+  in the string.</p>
+<p>Strings can be concatenated (producing a new string) with the<code> + </code>operator.</p>
+<p><b>String methods</b></p>
+<p>Here are some of the more important methods on strings. Others are</p>
+<dl> 
+  <dt><code>charAt(<i>n</i>)</code></dt>
+  <dd>Returns the <code><i>n</i></code><sup>th</sup> character of a string.</dd>
+  <dt><code>charCodeAt(<i>n</i>)</code></dt>
+  <dd>Returns the numeric Unicode value of the <code><i>n</i></code><sup>th</sup> 
+    character of a string.</dd>
+  <dt><code>concat(<i>string</i><sub>1</sub>, ..., <i>string</i><sub>N</sub>)</code></dt>
+  <dd>Concatenates the string arguments to the given string.</dd>
+  <dt><code>fromCharCode(<i>c</i><sub>1</sub>, ..., <i>c</i><sub>N</sub>)</code></dt>
+  <dd>Creates a string from the given numeric Unicode values.</dd>
+  <dt><code>indexOf(<i>substring</i>)</code></dt>
+  <dd>Returns the position of the first character of <code><i>substring</i></code> 
+    in the given string, or <code>-1</code> if not found.</dd>
+  <dt><code>indexOf(<i>substring</i>, <i>start</i>)</code></dt>
+  <dd>Returns the position of the first character of <code><i>substring</i></code> 
+    in the given string that begins at or after position <code><i>start</i></code>, 
+    or <code>-1</code> if not found.</dd>
+  <dt><code>lastIndexOf(<i>substring</i>)<br>
+    lastIndexOf(<i>substring</i>, <i>start</i>)</code></dt>
+  <dd>Like <code>indexOf</code>, but searching starts from the end of the given 
+    string.</dd>
+  <dt><code>localeCompare(<i>string</i>)</code></dt>
+  <dd>Returns a negative, zero, or positive number according to whether <code><i>string</i></code> 
+    is less than, equal to, or greater than the given string, according to locale-specific 
+    ordering.</dd>
+  <dt><code>match(<i>regexp</i>)</code></dt>
+  <dd>Returns an array containing the results of the match, or <code>null</code> 
+    if no match is found. On a successful match: 
+    <ul>
+      <li>If <code>g</code> (global) is set, the array contains the matched substrings.</li>
+      <li>If <code>g</code> is <i>not</i> set, array location 0 contains the matched 
+        text, and remaining locations contain text matched by any parenthesized 
+        subexpressions. The array <code>index</code> property gives the position 
+        of the first character of the match.</li>
+    </ul>
+  </dd>
+  <dt><code>replace(<i>regexp</i>, <i>replacement</i>)</code></dt>
+  <dd>Returns an new string that has the matched substring replaced with the <code><i>replacement</i></code>. 
+  </dd>
+  <dt><code>search(<i>regexp</i>)</code></dt>
+  <dd>Returns the position of the first matched substring in the given string, 
+    or <code>-1</code> if not found. </dd>
+</dl>
+<p>&nbsp;</p>
+<h2><a name="regular-expressions"></a><br>
+  Regular expressions</h2>
+A regular expression literal is written inside slashes, for example,<code> <nobr>/[a-zA-Z][a-zA-Z0-9_]/</nobr></code>. 
+Equivalently, a regular expression may be created by passing a string to the RegExp 
+constructor, for example, <nobr><code>new RegExp(&quot;[a-zA-Z][a-zA-Z0-9_]&quot;)</code>.</nobr>
+
+<p>Characters inside a regular expression are classified as follows:</p>
+<ul>
+  <li><b>Literals</b> are characters that stand for themselves. Examples include 
+    letters, digits, and whitespace characters.</li>
+  <li><b>Metacharacters</b> are characters that have special meaning in a regular 
+    expression. The metacharacters are:<code> \ | ( ) [ { ^ $ * + . ?</code></li>
+  <li><b>Escaped characters</b> are characters that are preceded by a backslash 
+    in order to use them as literals rather than as metacharacters, or because 
+    they are difficult to represent otherwise: <code>\\ &nbsp;\| &nbsp;\( &nbsp;\) 
+    &nbsp;\[ &nbsp;\{ &nbsp;\^ &nbsp;\$ &nbsp;\* &nbsp;\+ &nbsp;\. &nbsp;\? &nbsp;</code>&nbsp;&nbsp;and 
+    also: 
+    <ul>
+      <li>&nbsp;<code>\0&nbsp;</code>The NUL character, <code>\u0000</code><code></code></li>
+      <li><code>&nbsp;[\b]&nbsp;&nbsp;</code>Backspace,<code> \u0008</code> (special 
+        syntax)<code> </code></li>
+      <li>&nbsp;<code>\t&nbsp;&nbsp;</code>Tab, <code>\u0009</code></li>
+      <li>&nbsp;<code>\n&nbsp;&nbsp;</code>Newline,<code> \u000A</code></li>
+      <li>&nbsp;<code>\v&nbsp;&nbsp;</code>Vertical tab, <code>\u000B</code></li>
+      <li>&nbsp;<code>\f&nbsp;&nbsp;</code>Form feed, <code>\u000C</code></li>
+      <li> &nbsp;<code>\r&nbsp;&nbsp;</code>Carriage return, <code>\u000D</code></li>
+      <li>&nbsp;<code>\x<i>HH</i>&nbsp;&nbsp;</code>The character specified by 
+        the hex number <code><i>HH</i></code></li>
+      <li>&nbsp;<code>\u<i>HHHH</i>&nbsp;&nbsp;</code>The character specified 
+        by the hex number <code> <i>HHHH</i></code></li>
+      <li>&nbsp;<code>\c<i>X</i>&nbsp;&nbsp;</code>The control character <code>^<i>X</i></code></li>
+    </ul>
+  </li>
+  <li><b>Character classes</b> are escaped characters that represent any one of 
+    a set of characters: 
+    <ul>
+      <li>&nbsp;<code>\w&nbsp;&nbsp;</code>A word character; same as <code>[a-zA-Z0-9_]</code></li>
+      <li><code>&nbsp;\W&nbsp;&nbsp;</code>A nonword character; same as <code>[^a-zA-Z0-9_]</code></li>
+      <li>&nbsp;<code>\s&nbsp;&nbsp;</code>A whitespace character</li>
+      <li>&nbsp;<code>\S&nbsp;&nbsp;</code>A non-whitespace character</li>
+      <li>&nbsp;<code>\d&nbsp;&nbsp;</code>A digit; same as<code> [0-9]</code></li>
+      <li>&nbsp;<code>\D&nbsp;&nbsp;</code>A nondigit; same as<code> [^0-9]</code></li>
+      <li>&nbsp;<b><code>.&nbsp;&nbsp;</code></b>(Not escaped) Any character except 
+        a line terminator.</li>
+    </ul>
+  </li>
+</ul>
+<p>The following table lists the meanings of metacharacters:</p>
+<table border="1" cellpadding="4">
+  <tr bgcolor="#CCCCCC"> 
+    <th>Expression</th>
+    <th>Meaning</th>
+    <th>Examples</th>
+    <th>Explanation</th>
+  </tr>
+  <tr> 
+    <td>a literal character</td>
+    <td>That same character </td>
+    <td><code>M</code></td>
+    <td>The capital letter <code>M</code></td>
+  </tr>
+  <tr>
+    <td><code><i>XY</i></code></td>
+    <td>An <code><i>X</i></code> followed by a <code><i>Y</i></code></td>
+    <td><code>cat</code></td>
+    <td>The three characters <code>c a t</code>, in that order</td>
+  </tr>
+  <tr> 
+    <td><code>[<i>X</i>-<i>Y</i>]</code></td>
+    <td>Any one character between <code><i>X</i></code> and <code><i>Y</i></code>, 
+      inclusive</td>
+    <td><code>[0-9]</code><br>
+      <code>[a-zA-Z] </code></td>
+    <td>Any decimal digit;<br>
+      Any letter</td>
+  </tr>
+  <tr> 
+    <td><code>[<i>^X</i>-<i>Y</i>]</code></td>
+    <td>Any one character <i>not</i> between <code><i>X</i></code> and <code><i>Y</i></code>, 
+      inclusive</td>
+    <td><code><nobr>[^a-zA-Z] </nobr></code></td>
+    <td>Any non-letter</td>
+  </tr>
+  <tr> 
+    <td><code><i>X</i>*</code></td>
+    <td>Zero or more occurrences of <code><i>X</i></code></td>
+    <td><code>\s*</code></td>
+    <td>Any amount of whitespace</td>
+  </tr>
+  <tr> 
+    <td><code><i>X</i>+</code></td>
+    <td>One or more occurrences of <code><i>X</i></code></td>
+    <td><code>\s+</code></td>
+    <td>At least one whitespace character</td>
+  </tr>
+  <tr> 
+    <td><code><i>X</i>?</code></td>
+    <td>An optional <code><i>X</i></code></td>
+    <td><code>dogs?</code></td>
+    <td>Either <code>dog</code> or <code>dogs</code></td>
+  </tr>
+  <tr> 
+    <td><code><i>X</i>{<i>n</i>,<i>m</i>}</code></td>
+    <td>From <code><i>n</i></code> to <code><i>m</i></code> occurrences of <code><i>X</i></code></td>
+    <td><code>his{2,4}</code></td>
+    <td><code>hiss</code> or <code>hisss</code> or <code>hissss</code></td>
+  </tr>
+  <tr> 
+    <td><code><i>X</i>{<i>n</i>,}</code></td>
+    <td><code><i>n</i></code> or more<code><i></i></code> occurrences of <code><i>X</i></code></td>
+    <td><code>his{2,}</code></td>
+    <td><code>hiss</code> or <code>hisss</code> or <code>hissss</code> or ...</td>
+  </tr>
+  <tr> 
+    <td><code><i>X</i>{<i>n</i>}</code></td>
+    <td>Exactly<code><i> n</i></code> occurrences of <code><i>X</i></code></td>
+    <td><code>his{2}</code></td>
+    <td><code>hiss</code></td>
+  </tr>
+  <tr> 
+    <td><code><i>X</i>|<i>Y</i></code></td>
+    <td>Either <code><i>X</i></code> or <code><i>Y</i></code></td>
+    <td><code><nobr>The (boy|girl)</nobr></code></td>
+    <td>Either <code><nobr>The boy</nobr></code> or <code><nobr>The girl</nobr></code></td>
+  </tr>
+  <tr> 
+    <td><code>^<i>X</i></code></td>
+    <td><code><i>X</i></code> at the beginning of the string</td>
+    <td><code>^[A-Z]</code></td>
+    <td>An initial capital letter (the <code>^</code> itself matches the empty 
+      string)</td>
+  </tr>
+  <tr> 
+    <td><code><i>X</i></code><i><code></code></i><code>$</code></td>
+    <td><code><i>X</i></code> at the end of the string</td>
+    <td><code>[\.\?!]$</code></td>
+    <td>Ends with a period, question mark or exclamation point (the <code>$</code> 
+      itself matches the empty string)</td>
+  </tr>
+  <tr> 
+    <td><code>\b</code></td>
+    <td>The empty string between a word character (<code>\w</code>) and a nonword 
+      character(<code>\W</code>)</td>
+    <td><code>\bC\b</code></td>
+    <td>The <i>word</i> <code>C</code>, as in the language</td>
+  </tr>
+  <tr> 
+    <td><code>\B</code></td>
+    <td>An empty string that is <i>not</i> between a word character (<code>\w</code>) 
+      and a nonword character(<code>\W</code>)</td>
+    <td><code>comput\B</code></td>
+    <td>The initial part of the words <code>comput</code>er, <code>comput</code>ing, 
+      etc.</td>
+  </tr>
+  <tr> 
+    <td><code>(?=<i>pat</i>)</code></td>
+    <td>Look ahead to make sure that the pattern <code><i>pat</i></code> will 
+      match next, but do not count it in the matched part</td>
+    <td><code>\w+(?=&nbsp;)</code></td>
+    <td>A word, provided it is followed by a space</td>
+  </tr>
+  <tr> 
+    <td><code>(?!<i>pat</i>)</code></td>
+    <td>Look ahead to make sure that the pattern <code><i>pat</i></code> will 
+      <i>not</i> match next</td>
+    <td><code>\w+(?!-&nbsp;)</code></td>
+    <td>A word, provided it is not followed by a hyphen</td>
+  </tr>
+  <tr> 
+    <td><code>(<i>X</i>)</code></td>
+    <td>Group the expression <code><i>X</i></code> into a single unit, and remember 
+      what it matches</td>
+    <td><code>(////.*$)</code></td>
+    <td>A <code>//</code>-style comment (keep for later reference)</td>
+  </tr>
+  <tr> 
+    <td><code>(?:<i>X</i>)</code></td>
+    <td>Group the expression <code><i>X</i></code> into a single unit, but do 
+      <i>not</i> remember what it matches</td>
+    <td><code>(?:////.*$)</code></td>
+    <td>A <code>//</code>-style comment (discard it)</td>
+  </tr>
+</table>
+<p><i>Do not include extra spaces in regular expressions! </i>A space is a literal 
+  character, and a space in a regular expression requires a space in the string 
+  being searched.</p>
+<p>An <code>i</code> after a regular expression, for example <code>/javascript/i</code>, 
+  means case-insensitive matching. A<code> g </code>after a regular expression 
+  (&quot;global&quot;) means don't stop after the first match. An <code>m</code> 
+  means &quot;multiline mode:&quot; a <code>^</code> will match the beginning 
+  of the string or the beginning of a line, and a <code>$</code> will match the 
+  end of a line or string.</p>
+<dl> 
+  <dt><code><i>string</i>.search(<i>pattern</i>)</code></dt>
+  <dd>Returns the position of the start of the first substring in <code><i>string</i></code> 
+    that matches the <code><i>pattern</i></code>, or <code>-1</code> if the pattern 
+    is not found. If the global modifier <code>g</code> is present, it is ignored. 
+  </dd>
+</dl>
+<dl> 
+  <dt> <code><i>string</i>.replace(<i>pattern</i>, <i>replacement</i>)</code></dt>
+  <dd>Searches <code><i>string</i></code> for the <code><i>pattern</i></code> 
+    and, if found, replaces it with the <code><i>replacement</i></code>. If the 
+    global modifier<code> g </code>is present, the method replaces all occurrences 
+    of the <code><i>pattern</i></code> with the <code><i>replacement</i></code>. 
+    If the <code><i>pattern</i></code> contains parenthesized groups, then the 
+    <code><i>replacement</i></code> may use<code> $1 </code>to represent the first 
+    group matched,<code> $2 </code>to represent the second group matched, and 
+    so on.</dd>
+</dl>
+<dl> 
+  <dt><code><i>string</i>.match(<i>pattern</i>)</code></dt>
+  <dd><code>match</code> always returns an array. If the<code> g </code>flag is 
+    set, <code>match</code> returns an array of matched substrings.If the<code> 
+    g </code>flag is <i>not</i> set, <code>match</code> returns an array whose 
+    first element is the matched substring and whose n<sup>th</sup> element is 
+    the portion matched by the n<sup>th</sup> parenthesized group. The array has 
+    a <code>length</code> property, an <code>index</code> property (which holds 
+    the starting position), and an <code>input</code> propery (which holds <code><i>string</i></code>).</dd>
+</dl>
+<dl> 
+  <dt><code><i>string<sub>1</sub></i>.split(<i>string<sub>2</sub>_or_pattern</i>)</code></dt>
+  <dd>Returns an array of substrings of<code><i> string<sub>1</sub></i></code>, 
+    where each occurence of <code><i>string<sub>2</sub>_or_pattern</i></code> 
+    separates the substrings in <code><i>string<sub>1</sub></i></code>.</dd>
+</dl>
+<dl> 
+  <dt><code><i>pattern</i>.exec(<i>string</i>)</code></dt>
+  <dd><code>exec</code> returns an array whose first element is the matched substring 
+    and whose n<sup>th</sup> element is the portion matched by the n<sup>th</sup> 
+    parenthesized group. If no match is found, <code>exec</code> returns <code>null</code>. 
+    If the<code> g </code>flag is set, <code>exec</code> also modifies the <code>lastIndex</code> 
+    property of <code><i>pattern</i></code> to the character position just after 
+    the match (or to <code>0</code> if no match was found), so that if the pattern 
+    is used again, the search will resume from the point that it left off.</dd>
+</dl>
+<dl> 
+  <dt><code><i>pattern</i>.test(<i>string</i>)</code></dt>
+  <dd>Returns <code>true</code> if the match succeeds, and <code>null</code> otherwise. 
+    The<code> g </code>flag is handled the same way that it is for <code>exec</code>. 
+  </dd>
+</dl>
+<table border="1" cellpadding="4" bordercolor="#6666FF" align="center">
+  <tr>
+    <td><a href="concise-javascript-2.html">Part II: Client-Side JavaScript</a></td>
+  </tr>
+</table>
+<h2>&nbsp;</h2>
+<h2>&nbsp;</h2>
+</body>
+</html>

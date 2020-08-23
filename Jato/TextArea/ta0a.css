@@ -1,0 +1,38 @@
+textarea {
+    margin: 0;
+    border: 0 none;
+    overflow: hidden;
+    outline: none;
+    resize: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    background-color : #5d5463;
+    color : #ffffff;
+    vertical-align: top;
+    padding-top: 0px;
+    padding-right: 0px;
+    padding-bottom: 0px;
+    padding-left: 0px;
+
+    font-family: monaco,Consolas,Lucida Console,monospace;
+    font-size: 16px;
+    font-style: normal;
+    font-variant: normal;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+input.fileopen {
+    margin-right: 30px;
+}
+
+/*
+div {
+    background-color : #5d5463;
+    color : #ffffff;
+}
+*/

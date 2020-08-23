@@ -1,0 +1,58 @@
+<!doctype html>
+<!--
+https://learn.jquery.com/about-jquery/how-jquery-works/
+
+https://www.tutorialspoint.com/jquery/jquery-overview.htm
+-->
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Demo</title>
+    
+    <style>
+      a.test {
+      font-weight: bold;
+      }
+    </style>
+    
+  </head>
+  <body>
+    <a href="http://jquery.com/">jQuery</a>
+    <br/>
+    <a href="http://jquery.com/">jQuery2</a>
+    <br/>
+    <br/>
+    <input type="button" value="ClickMe" onclick="myOnClick()">
+    
+    <script src="jquery.js"></script>
+    <script>
+      
+      // Your code goes here.
+      $( document ).ready(function() {
+	  
+	  $( "a" ).addClass( "test" );
+
+	  /*
+	  $( "a" ).click(function( event ) {
+	      alert( "As you can see, the link no longer took you to jquery.com" );
+	      event.preventDefault();
+	      $( "a" ).removeClass( "test" );
+	  });
+	  */
+	  
+	  
+	  $( "a" ).click(function( event ) {
+	      event.preventDefault();
+	      $( this ).hide( "slow" );
+	  });
+	  
+      });
+      
+      
+      function myOnClick() { alert("Javascript Here!") }
+      
+    </script>
+    
+  </body>
+</html>

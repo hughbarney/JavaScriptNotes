@@ -1,0 +1,49 @@
+#file-view {
+    background-color : #5d5463;
+    
+    font-family: monaco,Consolas,Lucida Console,monospace;
+    font-size: 16px;
+    font-style: normal;
+    font-variant: normal;
+}
+
+#file-view #tab1 {
+    border: 0 none;
+    border-spacing: 0;
+    spellcheck: false;
+}
+
+#file-view .cl1 {
+    width: 3em;
+    color : #ffd700;
+    background-color : #909090;
+}
+
+/* set the col2 td width to 100% */
+#file-view .cl2 {
+    width: 100%;
+    spellcheck: false;
+}
+
+/* textarea does not seem to inherit the values from #file-view */
+#file-view .tx-line {
+    background-color : #5d5463;
+    color : #ffffff;
+
+    margin: 0;
+    border: 0 none;
+    border-spacing: 0;
+    overflow: hidden;
+    outline: none;
+    resize: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    width: 100%;
+    
+    font-family: monaco,Consolas,Lucida Console,monospace;
+    font-size: 16px;
+    font-style: normal;
+    font-variant: normal;
+    spellcheck: "false";   /* has no effect, have to use HTML directive */
+}

@@ -1,0 +1,24 @@
+#file-view {
+    background-color : #5d5463;
+    color : #ffd700;
+    
+    font-family: monaco,Consolas,Lucida Console,monospace;
+    font-size: 16px;
+    font-style: normal;
+    font-variant: normal;
+}
+
+
+#file-view #tab1 {
+    border: 0 none;
+    border-spacing: 0;
+}
+
+#file-view .cl1 {
+    width: 3em;
+    background-color : #909090;
+}
+
+#file-view .cl2 {
+    color: #50f441;  /* greenish */
+}

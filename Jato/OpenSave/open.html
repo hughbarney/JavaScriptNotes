@@ -1,0 +1,88 @@
+<html>
+ 
+<body onkeydown="onkey(event)">
+    
+<table>
+    <tr><td>C-o:open_file</td></tr>
+    <tr>
+        <td colspan="3">
+            <textarea id="inputTextToSave" cols="80" rows="25"></textarea>
+        </td>
+    </tr>
+</table>
+ 
+<script type="text/javascript">
+    
+var default_filename = "textfile.txt";
+var file_open_status = false;
+    
+function onkey(event) {
+    //alert("onkey()");    
+    try {
+    	onkey_handler(event);
+    } catch (e) {
+    	alert("onkey exception + " + e);
+    }
+}
+
+function onkey_handler(event)
+{
+    //alert("onkey_handler");
+
+    var char = event.which || event.keyCode;
+    var s = String.fromCharCode(char);
+
+    if (event.ctrlKey && s == "O") {
+        //alert("C-o");    
+        event.preventDefault();
+        open_file();
+    } else if (event.ctrlKey && s == "S") {
+        //alert("C-s");
+        event.preventDefault();
+        save_file();
+    } else {
+        //alert(s);
+    }
+}
+
+function open_file()
+{    
+    var element = document.createElement('div');
+    element.innerHTML = '<input type="file">';
+    var fileInput = element.firstChild;
+    file_open_status = false;
+
+    fileInput.addEventListener('change', function() {
+        var file = fileInput.files[0];
+
+        alert(file.name.length);
+
+        if (file.name.length > 0) {
+            var reader = new FileReader();
+
+            reader.onload = function() {
+                file_open_status = true;
+                set_text_area(reader.result);
+            };
+
+            reader.readAsText(file);    
+        } else {
+            file_open_status = false;
+            alert("a file was not selected");
+        }
+    });
+
+    fileInput.click();
+}
+
+function set_text_area(txt) 
+{    
+    var el = document.getElementById("inputTextToSave");
+    el.innerHTML = txt;    
+}
+   
+</script>
+ 
+</body>
+</html>
+

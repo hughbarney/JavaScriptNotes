@@ -1,0 +1,16 @@
+
+.input-class {
+    background-color : #5d5463;
+    color: #ffffff;
+
+    width: 12px;
+    border: 0 none;
+    padding: 0 none;
+    float: left;
+    
+    font-family: monaco,Consolas,Lucida Console,monospace;
+    font-size: 14px;
+    font-style: normal;
+    font-variant: normal;
+}
+
